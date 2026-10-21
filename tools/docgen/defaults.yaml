@@ -1,6 +1,5 @@
 # docgen defaults. A document's metadata.yaml overrides any key here.
-company: Public
-footer-center: Public
+author: Your Name
 section-newpage: true
 mainfont: Cantarell
 sansfont: Cantarell

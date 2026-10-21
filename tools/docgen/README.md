@@ -126,9 +126,9 @@ Table 5-1 lists the `metadata.yaml` keys (defaults in `defaults.yaml`; a documen
 |---|---|---|
 | `title`, `subtitle` | Cover page; `title` is also the default right header | — |
 | `revision`, `date` | Cover-page block; taken from the newest row of `history.md`, not from `metadata.yaml` | — |
-| `company` | Cover page | Public |
+| `author` | Cover page | Your Name |
 | `header-left`, `header-center`, `header-right` | Page header from page 2 on | `header-right` = title |
-| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; cover shows only `footer-center` | `footer-left` = page number, `footer-center` = Public |
+| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; cover shows only `footer-center` | `footer-left` = page number, `footer-center` = author |
 | `section-newpage` | Every `#` section starts a new page | true |
 | `align-left` | Body text and lists flush left with an uneven right margin instead of justified; table cells are unaffected | false (justified) |
 | `mainfont`, `sansfont`, `monofont` | XeLaTeX fonts (any font installed on the host) | Cantarell / Cantarell / DejaVu Sans Mono |
@@ -151,7 +151,7 @@ Table 6-1 lists the files in this directory.
 | File | Role |
 |---|---|
 | `docgen.mk` | Build rules, included by every document Makefile |
-| `defaults.yaml` | Default metadata (company, confidentiality text, fonts, page setup) |
+| `defaults.yaml` | Default metadata (author, confidentiality text, fonts, page setup) |
 | `template/spec.latex` | pandoc LaTeX template: pandoc 3.11 `default.latex` plus the blocks marked `docgen:` (cover page, fancyhdr styles, section-major table/figure counters, section page breaks) |
 | `filters/headers.lua` | Expands `{page}` in header/footer metadata |
 | `filters/pagebreak.lua` | Horizontal rule → page break |
