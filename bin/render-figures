@@ -1,0 +1,380 @@
+#!/usr/bin/env python3
+"""bin/render-figures — render a markdown doc's figure sources to SVG + PNG.
+
+Usage: render-figures [--check] [--outdir DIR] [--scale N] file.md
+       (bin/render-mermaid is a link to this script, for older instructions)
+
+DIR defaults to <md dir>/<md base>_figs.  The preferred layout keeps each
+figure's source in its own file there, named by a stable key, with the renders
+beside it, and the doc embeds the PNG only:
+
+  doc.md                     ![Figure 1-1: ...](doc_figs/fsm_states.png)
+                             *Figure 1-1: ...*
+  doc_figs/fsm_states.dot    Graphviz source (.mmd: Mermaid)
+  doc_figs/fsm_states.{svg,png}
+
+Every .dot / .mmd file in DIR is rendered to DIR/<file base>.{svg,png}.  Name
+files by key, not by figure number, so renumbering a section renames nothing.
+
+Fenced ```dot / ```mermaid blocks in the doc itself are rendered too, to
+DIR/<name>.{svg,png}, where <name> is figure_<num> when the block's caption
+paragraph starts with "Figure <num>:" (e.g. *Figure 1-1: ...*), else
+<md base>_<k> for the k-th block.  The caption may follow the fence directly, or
+the line that closes an HTML comment (or a </details>) holding the block.
+
+The renders are meant to be committed next to the doc; rerun after every edit
+to a source.
+
+Graphviz sources are rendered with `dot`: layout options belong in the graph
+itself (rank=same, splines, ports, ...).  Mermaid sources are rendered in
+headless Chrome.  Mermaid render options go in the source as a Mermaid comment, so
+they travel with the source and are part of its hash:
+  %% render-mermaid: arrow-scale=1.75
+scales the arrowheads (Mermaid fixes them at 8 px, with no setting).  It
+changes only these renders, not what a live Mermaid view draws.
+
+Both files carry the SHA-256 of the source (an XML comment in the SVG, a PNG
+tEXt chunk).  --check renders nothing: it exits 1 if any render is missing, was
+made from a different source, is an orphan (a render in DIR, carrying a hash,
+that no source produces; other images may share DIR), or an image link in the doc names a file in DIR that does not exist,
+so a stale or renamed figure fails loudly.  The hash covers the source only, not
+the renderer version.
+
+Needs (standard-library python3 only; no Node):
+  DOT         Graphviz dot     (default /grid/common/pkgs/graphviz/v4.0.0/bin/dot;
+                                /bin/dot on the hosts is the older 2.40)
+  CHROME      headless Chrome  (default /grid/common/pkgs/chrome/v142/...)
+  MERMAID_JS  mermaid.min.js   (default: the browser bundle of the hosted
+                                mermaid/12.0.0 module, Mermaid 12.1.0, the same
+                                Mermaid that docgen's mmdc uses)
+A new Graphviz or Mermaid version can lay diagrams out differently: after
+changing one, rerun this on every doc with a <doc>_figs directory and review
+the renders.  Run it on interactive.q, like any other tool (CLAUDE.md).
+"""
+import argparse, binascii, hashlib, html, os, re, shutil, struct, subprocess, sys, tempfile
+
+PROG = "render-figures"
+DOT = os.environ.get("DOT", "/grid/common/pkgs/graphviz/v4.0.0/bin/dot")
+CHROME = os.environ.get("CHROME", "/grid/common/pkgs/chrome/v142/chrome-linux64/chrome")
+MERMAID_JS = os.path.normpath(os.environ.get(
+    "MERMAID_JS", "/apps/hosted/mermaid/12.0.0/node_modules/mermaid/dist/mermaid.min.js"))
+TAG = "mermaid-src-sha256"          # kept for the renders already committed
+FENCE = re.compile(r"^```(mermaid|dot)\n(.*?)^```[ \t]*\n", re.S | re.M)
+
+
+SRC_EXT = {".dot": "dot", ".mmd": "mermaid"}
+
+
+def blocks(md, outdir):
+    """[(name, lang, source)] for each ```mermaid / ```dot fence, named by its Figure
+    caption, then for each .dot / .mmd source file in outdir, named by its file."""
+    text = open(md, encoding="utf-8").read()
+    base = os.path.splitext(os.path.basename(md))[0]
+    out = []
+    for k, m in enumerate(FENCE.finditer(text), 1):
+        cap = re.match(r"\s*(?:(?:-->|</details>)\s*)?\**Figure\s+([\w.-]+?)[.:]", text[m.end():])
+        out.append(("figure_" + cap.group(1) if cap else "%s_%d" % (base, k), m.group(1), m.group(2)))
+    if os.path.isdir(outdir):
+        for f in sorted(os.listdir(outdir)):
+            name, ext = os.path.splitext(f)
+            if ext in SRC_EXT:
+                out.append((name, SRC_EXT[ext], open(os.path.join(outdir, f), encoding="utf-8").read()))
+    names = [n for n, _, _ in out]
+    dup = {n for n in names if names.count(n) > 1}
+    if dup:
+        sys.exit("%s: ERROR duplicate figure names %s in %s" % (PROG, sorted(dup), md))
+    return out
+
+
+def sha(src):
+    return hashlib.sha256(src.encode()).hexdigest()
+
+
+# ---- Graphviz -------------------------------------------------------------------
+
+def run_dot(src, *args):
+    r = subprocess.run([DOT] + list(args), input=src.encode("utf-8"),
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if r.returncode:
+        sys.exit("%s: ERROR dot exited %d\n%s" % (PROG, r.returncode, r.stderr.decode("utf-8", "replace")[-2000:]))
+    return r.stdout
+
+
+def render_dot(src, svg_path, png, scale, h):
+    """SVG with the hash comment after the XML declaration; PNG at 96*scale dpi."""
+    svg = run_dot(src, "-Tsvg").decode("utf-8")
+    m = re.match(r"<\?xml[^>]*\?>\n?", svg)
+    k = m.end() if m else 0
+    open(svg_path, "w", encoding="utf-8").write(svg[:k] + "<!-- %s: %s -->\n" % (TAG, h) + svg[k:])
+    open(png, "wb").write(run_dot(src, "-Tpng", "-Gdpi=%g" % (96 * scale)))
+
+
+# ---- Mermaid --------------------------------------------------------------------
+
+def chrome(*args):
+    r = subprocess.run([CHROME, "--headless=new", "--no-sandbox", "--disable-gpu",
+                        "--allow-file-access-from-files", "--hide-scrollbars"] + list(args),
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    if r.returncode:
+        sys.exit("%s: ERROR chrome exited %d\n%s" % (PROG, r.returncode, r.stderr[-2000:]))
+    return r.stdout
+
+
+def render_svg(src, tmp):
+    """Mermaid source -> standalone SVG text (XMLSerializer, so it is valid XML)."""
+    page = os.path.join(tmp, "svg.html")
+    open(page, "w").write(
+        '<html><body><div id="d"></div><pre id="out"></pre>'
+        '<script src="file://%s"></script><script>'
+        'mermaid.initialize({startOnLoad: false, handDrawnSeed: 1});'
+        'mermaid.render("fig", %s).then(function (r) {'
+        '  var d = document.getElementById("d"); d.innerHTML = r.svg;'
+        '  document.getElementById("out").textContent ='
+        '    new XMLSerializer().serializeToString(d.querySelector("svg"));'
+        '}).catch(function (e) {'
+        '  document.getElementById("out").textContent = "ERROR " + e; });'
+        '</script></body></html>' % (MERMAID_JS, repr_js(src)))
+    dom = chrome("--virtual-time-budget=20000", "--dump-dom", "file://" + page)
+    m = re.search(r'<pre id="out">(.*?)</pre>', dom, re.S)
+    svg = html.unescape(m.group(1)) if m else ""
+    if not svg.startswith("<svg"):
+        sys.exit("%s: ERROR mermaid did not render: %s" % (PROG, svg[:500] or "no output"))
+    return svg
+
+
+def repr_js(s):
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") \
+                  .replace("<", "\\x3c") + '"'
+
+
+def size(svg):
+    vb = re.search(r'viewBox="([-\d.e ]+)"', svg).group(1).split()
+    return float(vb[2]), float(vb[3])
+
+
+def options(src):
+    """{name: value} from '%% render-mermaid: name=value ...' lines."""
+    opts = {}
+    for line in re.findall(r"^\s*%%\s*render-mermaid:(.*)$", src, re.M):
+        for k, v in re.findall(r"([\w-]+)=(\S+)", line):
+            opts[k] = v
+    unknown = set(opts) - {"arrow-scale"}
+    if unknown:
+        sys.exit("%s: ERROR unknown option(s) %s" % (PROG, sorted(unknown)))
+    return opts
+
+
+def scale_arrows(svg, k):
+    """Arrowhead markers are userSpaceOnUse at a fixed size: scale their box.
+    The marker's ref point stays on the line end, so the head grows about it."""
+    def one(m):
+        tag = m.group(0)
+        for a in ("markerWidth", "markerHeight"):
+            tag = re.sub(r'%s="([\d.]+)"' % a,
+                         lambda n: '%s="%g"' % (a, float(n.group(1)) * k), tag)
+        return tag
+    return re.sub(r"<marker [^>]*>", one, svg)
+
+
+def fix_size(svg):
+    """width="100%" + max-width style -> the natural size, for standalone viewers."""
+    w, h = size(svg)
+    svg = re.sub(r'^<svg([^>]*?) width="100%"', r'<svg\1 width="%g"' % w, svg, 1)
+    if not re.match(r'<svg[^>]* height="', svg):
+        svg = svg.replace("<svg", '<svg height="%g"' % h, 1)
+    # Path data comes out at full double precision (rounded node outlines run to
+    # 30 kB each); 0.01 px is invisible and cuts the file several-fold.
+    num = re.compile(r"-?\d+\.\d{3,}(?:e-?\d+)?")
+    return re.sub(r' d="([^"]*)"', lambda m: ' d="%s"' % num.sub(
+        lambda n: "%.2f" % float(n.group(0)), m.group(1)), svg)
+
+
+def viewport_shortfall(W, H, tmp):
+    """New-headless Chrome's viewport is smaller than --window-size (it keeps room
+    for browser UI), and --screenshot captures the window, so the bottom of the
+    page is cut off.  Measure the difference at this size."""
+    page = os.path.join(tmp, "probe.html")
+    open(page, "w").write('<html><body><pre id="o"></pre><script>document.getElementById("o")'
+                          '.textContent = innerWidth + " " + innerHeight;</script></body></html>')
+    m = re.search(r'<pre id="o">(\d+) (\d+)</pre>',
+                  chrome("--window-size=%d,%d" % (W, H), "--dump-dom", "file://" + page))
+    if not m:
+        sys.exit("%s: ERROR could not measure the Chrome viewport" % PROG)
+    return max(0, W - int(m.group(1))), max(0, H - int(m.group(2)))
+
+
+def png_crop(png, w, h):
+    """Keep the top-left w x h pixels of an 8-bit RGB/RGBA PNG (Chrome's output).
+    Rows are kept whole and only reference earlier rows, so dropping trailing rows
+    is exact; trailing columns are dropped after unfiltering each row."""
+    import zlib
+    data = open(png, "rb").read()
+    W, H, depth, ctype = struct.unpack(">IIBB", data[16:26])
+    if (W, H) == (w, h):
+        return
+    if depth != 8 or ctype not in (2, 6):
+        sys.exit("%s: ERROR unexpected PNG format (depth %d type %d)" % (PROG, depth, ctype))
+    bpp = 3 if ctype == 2 else 4
+    chunks, idat, i = [], b"", 8
+    while i < len(data):
+        n, typ = struct.unpack(">I4s", data[i:i + 8])
+        if typ == b"IDAT":
+            idat += data[i + 8:i + 8 + n]
+        elif typ != b"IEND":
+            chunks.append((typ, data[i + 8:i + 8 + n]))
+        i += 12 + n
+    raw, stride, prev, out = zlib.decompress(idat), W * bpp, bytearray(W * bpp), bytearray()
+    if w == W:  # rows only: no need to unfilter
+        out = raw[:h * (stride + 1)]
+    for r in range(h if w != W else 0):
+        f, row = raw[r * (stride + 1)], bytearray(raw[r * (stride + 1) + 1:(r + 1) * (stride + 1)])
+        for x in range(stride):
+            a = row[x - bpp] if x >= bpp else 0
+            b, c = prev[x], prev[x - bpp] if x >= bpp else 0
+            if f == 1:
+                row[x] = (row[x] + a) & 255
+            elif f == 2:
+                row[x] = (row[x] + b) & 255
+            elif f == 3:
+                row[x] = (row[x] + (a + b) // 2) & 255
+            elif f == 4:
+                p = a + b - c
+                pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+                row[x] = (row[x] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        out += b"\0" + row[:w * bpp]
+        prev = row
+
+    def chunk(typ, body):
+        return struct.pack(">I", len(body)) + typ + body + \
+            struct.pack(">I", binascii.crc32(typ + body) & 0xffffffff)
+    res = data[:8]
+    for typ, body in chunks:
+        res += chunk(typ, struct.pack(">II", w, h) + body[8:] if typ == b"IHDR" else body)
+    res += chunk(b"IDAT", zlib.compress(bytes(out), 9)) + chunk(b"IEND", b"")
+    open(png, "wb").write(res)
+
+
+def render_png(svg_path, png, scale, tmp):
+    w, h = size(open(svg_path).read())
+    W, H = int(w + 0.999), int(h + 0.999)
+    dw, dh = viewport_shortfall(W, H, tmp)
+    page = os.path.join(tmp, "png.html")
+    open(page, "w").write('<html><body style="margin:0;background:white">'
+                          '<img src="file://%s" width="%d" height="%d" style="display:block">'
+                          '</body></html>' % (svg_path, W, H))
+    chrome("--window-size=%d,%d" % (W + dw, H + dh), "--force-device-scale-factor=%g" % scale,
+           "--virtual-time-budget=5000", "--screenshot=" + png, "file://" + page)
+    if not os.path.exists(png):
+        sys.exit("%s: ERROR chrome wrote no %s" % (PROG, png))
+    png_crop(png, int(round(W * scale)), int(round(H * scale)))
+
+
+def render_mermaid(src, svg_path, png, scale, h, tmp):
+    svg = fix_size(render_svg(src, tmp))
+    opts = options(src)
+    if "arrow-scale" in opts:
+        svg = scale_arrows(svg, float(opts["arrow-scale"]))
+    open(svg_path, "w").write("<!-- %s: %s -->\n%s\n" % (TAG, h, svg))
+    render_png(svg_path, png, scale, tmp)
+
+
+# ---- hashes and --check ---------------------------------------------------------
+
+def png_add_text(png, key, value):
+    """Insert a tEXt chunk after IHDR."""
+    data = open(png, "rb").read()
+    body = key.encode("latin-1") + b"\0" + value.encode("latin-1")
+    chunk = struct.pack(">I", len(body)) + b"tEXt" + body + \
+        struct.pack(">I", binascii.crc32(b"tEXt" + body) & 0xffffffff)
+    ihdr_end = 8 + 8 + struct.unpack(">I", data[8:12])[0] + 4
+    open(png, "wb").write(data[:ihdr_end] + chunk + data[ihdr_end:])
+
+
+def png_text(png, key):
+    data, i = open(png, "rb").read(), 8
+    while i < len(data):
+        n, typ = struct.unpack(">I4s", data[i:i + 8])
+        if typ == b"tEXt":
+            k, _, v = data[i + 8:i + 8 + n].partition(b"\0")
+            if k.decode("latin-1") == key:
+                return v.decode("latin-1")
+        i += 12 + n
+    return None
+
+
+def svg_hash(path):
+    m = re.search(r"<!-- %s: (\w+) -->" % TAG, open(path, encoding="utf-8").read(2000))
+    return m.group(1) if m else None
+
+
+def check(md, outdir, figs):
+    bad = []
+    for name, _, src in figs:
+        h = sha(src)
+        for ext, get in (("svg", svg_hash), ("png", lambda p: png_text(p, TAG))):
+            p = os.path.join(outdir, name + "." + ext)
+            if not os.path.exists(p):
+                bad.append("missing  " + p)
+            elif get(p) != h:
+                bad.append("stale    " + p)
+    # Orphans are renders of ours (they carry the hash) that no source produces;
+    # other images may share DIR (docgen's img/).
+    want = {n + e for n, _, _ in figs for e in (".svg", ".png")}
+    if os.path.isdir(outdir):
+        for f in sorted(os.listdir(outdir)):
+            p = os.path.join(outdir, f)
+            ours = svg_hash(p) if f.endswith(".svg") else png_text(p, TAG) if f.endswith(".png") else None
+            if ours and f not in want:
+                bad.append("orphan   " + p)
+    # Image links into outdir must name a render, so a renamed source is caught.
+    text = open(md, encoding="utf-8").read()
+    for link in re.findall(r"!\[[^\]]*\]\(([^)\s]+)", text):
+        p = os.path.normpath(os.path.join(os.path.dirname(md), link))
+        if os.path.dirname(p) == outdir and not os.path.exists(p):
+            bad.append("broken   " + link)
+    for b in bad:
+        print("%s: %s" % (PROG, b))
+    print("%s: %s: %d figure(s), %s" % (PROG, md, len(figs), "FAIL" if bad else "up to date"))
+    return 1 if bad else 0
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("md")
+    ap.add_argument("--outdir")
+    ap.add_argument("--scale", type=float, default=2.0, help="PNG pixels per CSS px (default 2)")
+    ap.add_argument("--check", action="store_true", help="verify the renders, don't render")
+    a = ap.parse_args()
+    md = os.path.abspath(a.md)
+    outdir = os.path.abspath(a.outdir or os.path.splitext(md)[0] + "_figs")
+    figs = blocks(md, outdir)
+    if not figs:
+        sys.exit("%s: ERROR no ```dot or ```mermaid blocks in %s and no .dot or .mmd files in %s"
+                 % (PROG, md, outdir))
+    if a.check:
+        sys.exit(check(md, outdir, figs))
+    langs = {lang for _, lang, _ in figs}
+    needs = ([(DOT, "DOT")] if "dot" in langs else []) + \
+            ([(CHROME, "CHROME"), (MERMAID_JS, "MERMAID_JS")] if "mermaid" in langs else [])
+    for need, what in needs:
+        if not os.path.exists(need):
+            sys.exit("%s: ERROR %s not found: %s (see --help)" % (PROG, what, need))
+    os.makedirs(outdir, exist_ok=True)
+    tmp = tempfile.mkdtemp(prefix="render-figures.")
+    try:
+        for name, lang, src in figs:
+            h = sha(src)
+            svg_path = os.path.join(outdir, name + ".svg")
+            png = os.path.join(outdir, name + ".png")
+            if lang == "dot":
+                render_dot(src, svg_path, png, a.scale, h)
+            else:
+                render_mermaid(src, svg_path, png, a.scale, h, tmp)
+            png_add_text(png, TAG, h)
+            print("%s: wrote %s {.svg,.png}" % (PROG, os.path.relpath(svg_path[:-4])))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+if __name__ == "__main__":
+    main()

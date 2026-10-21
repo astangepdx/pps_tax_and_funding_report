@@ -1,0 +1,22 @@
+# docgen defaults. A document's metadata.yaml overrides any key here.
+company: Public
+footer-center: Public
+section-newpage: true
+mainfont: Cantarell
+sansfont: Cantarell
+monofont: DejaVu Sans Mono
+# Greek letters and arrows are set in this font (Cantarell has neither).
+fallbackfont: DejaVu Sans
+# Text in mermaid and WaveDrom diagrams: set in mainfont at this nominal size (the whole
+# diagram is then scaled to fit the page width, which scales the text with it).
+diagram-font-size: 11pt
+fontsize: 11pt
+papersize: letter
+geometry:
+  - margin=1in
+  - headheight=15pt
+colorlinks: true
+linkcolor: NavyBlue
+urlcolor: NavyBlue
+# Table header-row shading, hex RGB (light blue). Remove the key for no shading.
+table-header-color: DDEBF7

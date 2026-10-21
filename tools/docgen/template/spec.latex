@@ -1,0 +1,282 @@
+$-- docgen spec template. Derived from pandoc 3.11 default.latex (pandoc -D latex);
+$-- docgen additions are the blocks marked "docgen:". Keep the rest verbatim so a
+$-- future pandoc upgrade can be diffed against `pandoc -D latex`.
+$document-metadata.latex()$
+$passoptions.latex()$
+\documentclass[
+$for(babel-otherlangs)$
+  $babel-otherlangs$,
+$endfor$
+$if(babel-lang)$
+  $babel-lang$,
+$endif$
+$if(fontsize)$
+  $fontsize$,
+$endif$
+$if(papersize)$
+  $papersize$paper,
+$endif$
+$for(classoption)$
+  $classoption$$sep$,
+$endfor$
+]{$documentclass$}
+$if(beamerarticle)$
+\usepackage{beamerarticle} % needs to be loaded first
+$endif$
+\usepackage{xcolor}
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+\usepackage{amsmath,amssymb}
+$if(cancel)$
+\usepackage{cancel}
+$endif$
+$--
+$-- section numbering
+$--
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+$endif$
+$fonts.latex()$
+$font-settings.latex()$
+$common.latex()$
+$for(header-includes)$
+$header-includes$
+$endfor$
+$after-header-includes.latex()$
+$hypersetup.latex()$
+
+$-- docgen: fallback font for characters the main font lacks
+$if(fallbackfont)$
+% XeLaTeX has no automatic glyph fallback: filters/fallback.lua wraps Greek letters and
+% arrows in this family so a main font without them (e.g. Cantarell) does not drop them.
+\newfontfamily\docgenfallbackfont{$fallbackfont$}[Scale=MatchLowercase]
+$endif$
+$-- docgen: headers, footers, cover page style, section-major table/figure numbers
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\setlength{\headheight}{15pt}
+\fancypagestyle{docgencover}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \fancyfoot[C]{$footer-center$}%
+}
+\newcommand{\docgenbodystyle}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \fancyhead[L]{$header-left$}%
+  \fancyhead[C]{$header-center$}%
+  \fancyhead[R]{$if(header-right)$$header-right$$else$$title$$endif$}%
+  \fancyfoot[L]{$if(footer-left)$$footer-left$$else$\thepage$endif$}%
+  \fancyfoot[C]{$footer-center$}%
+  \fancyfoot[R]{$footer-right$}%
+}
+\fancypagestyle{docgenbody}{\docgenbodystyle}
+\fancypagestyle{plain}{\docgenbodystyle}
+\pagestyle{docgenbody}
+$if(section-newpage)$
+\pretocmd{\section}{\clearpage}{}{}
+$endif$
+$if(align-left)$
+% Body text set flush left with an uneven right margin instead of justified.
+% ragged2e's \RaggedRight keeps hyphenation and a small rightskip stretch; it also sets
+% \@rightskip, so lists follow. Table cells set their own alignment (filters/tables.lua).
+\usepackage{ragged2e}
+\RaggedRight
+$endif$
+\makeatletter
+% pandoc >= 3 passes alt={...} to \includegraphics; graphicx before 2021 rejects unknown keys.
+\@ifpackageloaded{graphicx}{\@ifundefined{KV@Gin@alt}{\define@key{Gin}{alt}{}}{}}{}
+% Tables are emitted as raw longtables by filters/tables.lua, so pandoc no longer sees
+% a Table and does not load its table packages; load them unconditionally.
+\usepackage{longtable,booktabs,array,calc,multirow}
+\usepackage{multicol}  % <!-- columns N --> blocks (filters/columns.lua)
+\usepackage{soul}      % ==highlighted text== (pandoc mark extension) -> \hl
+\sethlcolor{yellow}
+% \hl in unwrapped (l/c/r) table cells, where soul loops on TeX Live >= 2025
+% (filters/tables.lua renames it there).
+\newcommand{\docgencellhl}[1]{{\setlength{\fboxsep}{1.5pt}\colorbox{yellow}{#1}}}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+% Keep tables on one page when they fit on one. filters/tables.lua emits
+% \docgenkeeptable{<heading allowance>}{<measuring copy>} before each table (and before its heading and lead-in paragraph, if any): the copy is set
+% in a box that is never output, and if the table is shorter than a page but taller than
+% the space left on the current page, the page ends early (needspace-style, without the
+% needspace package). Tables taller than a page break across pages as usual.
+\newsavebox\docgentablebox
+\newdimen\docgentableht
+\newcommand{\docgenneedspace}[1]{\par\penalty-100\begingroup
+  \dimen@=#1\relax
+  \dimen@ii\pagegoal \advance\dimen@ii-\pagetotal
+  \ifdim\dimen@>\dimen@ii
+    \ifdim\dimen@ii>\z@ \vfil\fi
+    \penalty-\@M
+  \fi\endgroup}
+\newcommand{\docgenkeeptable}[2]{% #1 = allowance for a heading above, #2 = measuring copy
+  \begingroup
+    \let\footnote\@gobble
+    \setbox\docgentablebox\vbox{#2}%
+    \global\docgentableht=\dimexpr\ht\docgentablebox+\dp\docgentablebox+\LTpre+\baselineskip+#1\relax
+  \endgroup
+  \ifdim\docgentableht<\textheight \docgenneedspace{\docgentableht}\fi}
+% Level-4 and level-5 headings (#### / #####) sit on their own line like levels 1-3;
+% the article class sets \paragraph and \subparagraph as run-in headings.
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}{1ex \@plus.2ex}{\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}{1ex \@plus.2ex}{\normalfont\normalsize\bfseries}}
+% Space between the body (including a table ending at the page bottom) and the footnote rule.
+\setlength{\skip\footins}{12pt}
+% Table and figure captions (label and text) are bold.
+\captionsetup{font=bf}
+\@ifundefined{c@none}{\newcounter{none}}{}
+% Table grid lines (filters/tables.lua column widths already account for this).
+\setlength{\arrayrulewidth}{0.4pt}
+$if(table-header-color)$
+% Header-row shading for tables (filters/tables.lua emits \rowcolor{docgentableheader}).
+\usepackage{colortbl}
+\definecolor{docgentableheader}{HTML}{$table-header-color$}
+$endif$
+% Images are scaled to at most the line width and the text height less five lines
+% (pandoc's default is the full text height), so a heading, the figure and a two-line
+% caption fit on one page. \textheight is the body only; header and footer are outside it.
+\@ifundefined{pandocbounded}{}{%
+\renewcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\dimexpr\textheight-5\baselineskip\relax}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi}%
+}
+% Figures stay where they are written instead of floating to a later page.
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatplacement{figure}{H}
+\@addtoreset{table}{section}
+\@addtoreset{figure}{section}
+\makeatother
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\ifdefined\theHtable
+  \renewcommand{\theHtable}{\thesection.\arabic{table}}
+  \renewcommand{\theHfigure}{\thesection.\arabic{figure}}
+\fi
+$if(pdf-trailer-id)$
+
+\ifXeTeX
+\special{pdf:trailerid [ $pdf-trailer-id$ ]}
+\fi
+\ifPDFTeX
+\pdftrailerid{}
+\pdftrailer{/ID [ $pdf-trailer-id$ ]}
+\fi
+\ifLuaTeX
+\pdfvariable trailerid {[ $pdf-trailer-id$ ]}
+\fi
+$endif$
+
+\begin{document}
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$-- docgen: cover page (replaces \maketitle). Page 1, number hidden; numbering continues on page 2.
+\thispagestyle{docgencover}
+\begin{center}
+\vspace*{3cm}
+$if(company)$
+{\LARGE $company$\par}
+\vspace{2.5cm}
+$endif$
+{\Huge\bfseries $title$\par}
+$if(subtitle)$
+\vspace{0.6cm}
+{\LARGE $subtitle$\par}
+$endif$
+\vfill
+\begin{tabular}{@{}rl@{}}
+$if(revision)$
+Revision: & $revision$ \\
+$endif$
+$if(date)$
+Date: & $date$ \\
+$endif$
+\end{tabular}
+\vspace{2cm}
+\end{center}
+\clearpage
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+$if(toc-title)$
+\renewcommand*\contentsname{$toc-title$}
+$endif$
+{
+$if(colorlinks)$
+$if(toccolor)$
+\hypersetup{linkcolor=$toccolor$}
+$endif$
+$endif$
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+\clearpage
+$endif$
+$-- docgen: list of tables then list of figures (filters/tables.lua sets lot/lof when the
+$-- document has captioned tables/figures); each starts a new page like any section.
+$if(lot)$
+\listoftables
+$endif$
+$if(lof)$
+\listoffigures
+$endif$
+$if(lot)$
+\clearpage
+$else$
+$if(lof)$
+\clearpage
+$endif$
+$endif$
+$if(linestretch)$
+\setstretch{$linestretch$}
+$endif$
+$if(has-frontmatter)$
+\mainmatter
+$endif$
+$body$
+
+$if(has-frontmatter)$
+\backmatter
+$endif$
+$if(nocite-ids)$
+\nocite{$for(nocite-ids)$$it$$sep$, $endfor$}
+$endif$
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(has-chapters)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}
