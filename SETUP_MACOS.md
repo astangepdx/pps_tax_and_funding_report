@@ -193,14 +193,14 @@ include ../../../../tools/docgen/docgen.mk
 title: Demo Block Specification
 subtitle: Architecture and interfaces
 # revision and date on the cover page come from the newest row of history.md
-# footer-center: Anarel Confidential
+# footer-center: Pulic
 # align-left: true
 ```
 
 `history.md`:
 
 ```markdown
-Anarel Confidential
+Public
 
 Editor notes above the heading are not rendered. Newest version first; the cover page prints the first row.
 
@@ -214,7 +214,7 @@ Editor notes above the heading are not rendered. Newest version first; the cover
 `overview.md`:
 
 ````markdown
-Anarel Confidential
+Public
 
 # Overview
 
@@ -252,9 +252,9 @@ The build writes `out/<DOC>.md` first: every section file with its preamble remo
 | --- | --- | --- |
 | `title`, `subtitle` | Cover page; `title` is also the default right header | — |
 | `revision`, `date` | Cover page; taken from the newest row of `history.md`, never from `metadata.yaml` | — |
-| `company` | Cover page | Anarel |
+| `company` | Cover page | Public |
 | `header-left`, `header-center`, `header-right` | Page header from page 2 on | `header-right` = title |
-| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; the cover shows only `footer-center` | page number / Anarel Confidential / — |
+| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; the cover shows only `footer-center` | page number / Public / — |
 | `section-newpage` | Every `#` section starts a new page | true |
 | `align-left` | Flush-left body text instead of justified | false |
 | `mainfont`, `sansfont`, `monofont`, `fallbackfont` | XeLaTeX fonts, by installed family name | Cantarell / Cantarell / DejaVu Sans Mono / DejaVu Sans |
@@ -273,7 +273,7 @@ Makefile variables that can be set before the `include` or on the command line: 
 
 ### 5.1 Section files
 
-- **Every section file and `history.md` starts with the line `Anarel Confidential`**, then a blank line, then any editor notes, then the first `#` heading. Everything above the first level-1 heading is dropped from the PDF, so the notice never renders twice, but a file read on its own still carries it. Put to-dos and notes to co-authors there, never content. A file with no `#` heading fails the build.
+- **Every section file and `history.md` starts with the line `Public`**, then a blank line, then any editor notes, then the first `#` heading. Everything above the first level-1 heading is dropped from the PDF, so the notice never renders twice, but a file read on its own still carries it. Put to-dos and notes to co-authors there, never content. A file with no `#` heading fails the build.
 - **Several sections per file are fine.** Every `#` heading starts a new numbered section in file order; `SECTIONS` in the Makefile sets the file order. Split files by topic, so parallel edits do not collide.
 - **One line per paragraph and per bullet.** Never hard-wrap prose; editors soft-wrap it, and hard wraps make diffs unreadable.
 - Keep the source plain markdown that a WYSIWYG editor renders: fenced `mermaid` / `wavedrom` blocks, `Figure:` / `Table:` caption paragraphs, `<!-- columns -->` comments. Pandoc attribute syntax (`{.mermaid caption=...}`) still works but shows as literal text in editors.
@@ -524,7 +524,7 @@ STRIP_HEADING_NUMBERS ?= 0
 # Extra pandoc options.
 PANDOC_EXTRA ?=
 # Confidentiality line written at the top of the generated markdown (stripped for the PDF).
-NOTICE ?= Anarel Confidential
+NOTICE ?= Public
 
 # ---- Tools ----
 PANDOC       ?= pandoc
@@ -660,8 +660,8 @@ endif  # DOCGEN_SUBMIT
 
 `````yaml
 # docgen defaults. A document's metadata.yaml overrides any key here.
-company: Anarel
-footer-center: Anarel Confidential
+company: Public
+footer-center: Public
 section-newpage: true
 mainfont: Cantarell
 sansfont: Cantarell
@@ -1909,7 +1909,7 @@ blank line between files. Nothing is reformatted: tables, diagram fences, footno
 [Table](#KEY) references stay exactly as written, so the result is a faithful, diffable
 text version of the document for other consumers (e.g. DV). The PDF is built from it.
 
-The file starts with the confidentiality notice (--notice, e.g. "Anarel Confidential") on its
+The file starts with the confidentiality notice (--notice, e.g. "Public") on its
 own line, like every section file, then an HTML comment naming the document, its revision
 and its sources. That preamble is stripped again before the PDF is built. The file
 it has no cover page, table of contents or version history, and no section numbers.
@@ -2038,7 +2038,7 @@ cd /workspace/dig/design/chip/doc && make
 END
 ```
 
-The build first writes `out/<DOC>.md`: every section file with its preamble removed, joined verbatim in `SECTIONS` order. It has no cover page, table of contents, version history or section numbers, and nothing in it is reformatted, so tables, diagram fences, footnotes and `[Table](#KEY)` references stay exactly as written; refer to things by their keys, not numbers. Its first line is the confidentiality notice (`NOTICE`, default `Anarel Confidential`), exactly as in the section files, followed by a comment naming the title, revision and source files; both are stripped again before the PDF is built. The comment also notes and relative paths in it (`img/…`, `wavedrom/…`) are relative to the document directory. pandoc then turns that file into `out/<DOC>.tex`, and docgen runs `xelatex` until LaTeX stops asking for a rerun, because table column widths and the TOC need more passes than pandoc's own PDF step makes. The build prints the number of overfull lines (text or a table wider than its column) when there are any; the details are in `out/<DOC>.log`.
+The build first writes `out/<DOC>.md`: every section file with its preamble removed, joined verbatim in `SECTIONS` order. It has no cover page, table of contents, version history or section numbers, and nothing in it is reformatted, so tables, diagram fences, footnotes and `[Table](#KEY)` references stay exactly as written; refer to things by their keys, not numbers. Its first line is the confidentiality notice (`NOTICE`, default `Public`), exactly as in the section files, followed by a comment naming the title, revision and source files; both are stripped again before the PDF is built. The comment also notes and relative paths in it (`img/…`, `wavedrom/…`) are relative to the document directory. pandoc then turns that file into `out/<DOC>.tex`, and docgen runs `xelatex` until LaTeX stops asking for a rerun, because table column widths and the TOC need more passes than pandoc's own PDF step makes. The build prints the number of overfull lines (text or a table wider than its column) when there are any; the details are in `out/<DOC>.log`.
 
 Everything generated lands in the document's `out/` directory, which is gitignored (`dig/.gitignore` covers `design/*/doc/out/`).
 
@@ -2068,7 +2068,7 @@ include ../../../../tools/docgen/docgen.mk
 ## 4. Writing sections
 
 - **Preamble is ignored.** Everything in a section file (and in `history.md`) above its first level-1 heading (`# Title`) is dropped: use it for editor notes, to-dos and comments to co-authors. A file with no level-1 heading fails the build.
-- **Start every file with `Anarel Confidential`** on its own line, before any editor notes. It is dropped with the rest of the preamble, so the PDF is unaffected, and a section rendered or read on its own still carries the notice.
+- **Start every file with `Public`** on its own line, before any editor notes. It is dropped with the rest of the preamble, so the PDF is unaffected, and a section rendered or read on its own still carries the notice.
 - **Several sections per file are fine.** Every `#` heading starts a new numbered section, in file order.
 - **Do not number headings.** `#` → 1, `##` → 1.1, `###` → 1.1.1 are generated. Every `#` section starts on a new page while `section-newpage` is true (the default).
 - **Manual page break:** a horizontal rule (a line containing only `---`). A raw `\newpage` line also works.
@@ -2110,9 +2110,9 @@ Table 5-1 lists the `metadata.yaml` keys (defaults in `defaults.yaml`; a documen
 |---|---|---|
 | `title`, `subtitle` | Cover page; `title` is also the default right header | — |
 | `revision`, `date` | Cover-page block; taken from the newest row of `history.md`, not from `metadata.yaml` | — |
-| `company` | Cover page | Anarel |
+| `company` | Cover page | Public |
 | `header-left`, `header-center`, `header-right` | Page header from page 2 on | `header-right` = title |
-| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; cover shows only `footer-center` | `footer-left` = page number, `footer-center` = Anarel Confidential |
+| `footer-left`, `footer-center`, `footer-right` | Page footer from page 2 on; cover shows only `footer-center` | `footer-left` = page number, `footer-center` = Public |
 | `section-newpage` | Every `#` section starts a new page | true |
 | `align-left` | Body text and lists flush left with an uneven right margin instead of justified; table cells are unaffected | false (justified) |
 | `mainfont`, `sansfont`, `monofont` | XeLaTeX fonts (any font installed on the host) | Cantarell / Cantarell / DejaVu Sans Mono |
@@ -2126,7 +2126,7 @@ Table 5-1 lists the `metadata.yaml` keys (defaults in `defaults.yaml`; a documen
 
 Write `{page}` anywhere in a header or footer slot to place the page number (`footer-right: "Page {page}"`). The cover page is page 1 with its number hidden; numbering continues from 2.
 
-`history.md` is `Anarel Confidential`, then a pipe table under a plain `# Version History` heading (made unnumbered and kept out of the TOC by `filters/history.lua`) whose first column is the revision. It is placed on its own page after the last section. List the newest version first: the cover page prints the Rev and Date of the table's first row (found by column name), and the build fails if the table is missing or its first row has no revision. The planned release flow (a `release` target, Claude-written change lists, compaction of older entries) is recorded in the editor notes of the chip spec's `history.md`.
+`history.md` is `Public`, then a pipe table under a plain `# Version History` heading (made unnumbered and kept out of the TOC by `filters/history.lua`) whose first column is the revision. It is placed on its own page after the last section. List the newest version first: the cover page prints the Rev and Date of the table's first row (found by column name), and the build fails if the table is missing or its first row has no revision. The planned release flow (a `release` target, Claude-written change lists, compaction of older entries) is recorded in the editor notes of the chip spec's `history.md`.
 
 ## 6. Files in this directory
 
