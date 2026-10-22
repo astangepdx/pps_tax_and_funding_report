@@ -133,6 +133,14 @@ $endif$
 \setlength{\skip\footins}{12pt}
 % Table and figure captions (label and text) are bold.
 \captionsetup{font=bf}
+% Block quotes (> text) sit on a light gray background, set apart from code blocks;
+% framed lets the box break across pages.
+\usepackage{framed}
+\definecolor{docgenquotebg}{gray}{0.92}
+\renewenvironment{quote}
+  {\def\FrameCommand{\fboxsep=6pt\colorbox{docgenquotebg}}%
+   \MakeFramed{\advance\hsize-\width\FrameRestore}}
+  {\endMakeFramed}
 \@ifundefined{c@none}{\newcounter{none}}{}
 % Table grid lines (filters/tables.lua column widths already account for this).
 \setlength{\arrayrulewidth}{0.4pt}
