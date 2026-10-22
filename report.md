@@ -120,6 +120,8 @@ Figure gf_pie: FY 2025-26 District General Fund expenditures by category (\$M).
 | District `PPS_LOC_OPT` received | tax years 2021→2025 | +0.9%/yr |
 | District `PPS_BONDS` received | tax years 2021→2025 | +5.2%/yr |
 | District General Fund expenditures | FY 2022-23→FY 2025-26 | +3.9%/yr |
+| US CPI-U, annual average | 2021→2025 | +4.4%/yr |
+| US PCE price index, annual average | 2021→2025 | +3.9%/yr |
 
 Table growth_compare: Tax growth vs. expenditure growth.
 
@@ -132,7 +134,46 @@ Increased cost against the District General Fund would not explain a widening fu
 
 ## Redistribution
 
-See [Statute Annotations](#statute-annotations).
+See [Statute Annotations](#statute-annotations) for a details analysis.  Below is a summary.
+
+The state has a General Fund for schools.  The budget is determined by the legislature.  The budget the legislature sets has two funding components:
+
+- Local taxes - `L_pps`
+       - Each district has an established local tax rate, capped by Measure 50 in 1997
+       - For PPS, this means the state takes 90% of the `PORTLAND PUBLIC SCHOOLS` amount into account
+       - The state totals the local taxes from across the state
+- General Fund
+       - The state has a General Fund for education, funded mainly through income taxes and lottery
+
+The state does not set an amount to pay from the general fund.  Instead the state sets a budget, `Pot`, and the amount each district gets from the state general fund is a grant added to the local taxes for the district.
+
+Then the state divides `Pot` by the total weighted students in the state, `ADMw_state`.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.
+
+```
+Rate_ADMw = Pot / ADMw_state`
+```
+
+Then the state looks at a district's share of weighted students compared to the state, `ADMw_pps`.  The amount of money granted from the state to the district is the per-student budget times the number of weighted students in the district, minus the locally raised taxes:
+
+```
+Grant_pps = Rate_ADMw × ADMw_pps − L_pps
+```
+
+This means that:
+
+- If a district's share of weighted students decreases, the grant from the state decreases
+       - For example, if a student leaves the district
+- If a district's local tax revenue increases relative to other districts, the grant from the state decreases
+       - For example, if a district's property values increase relative to other districts
+
+Though the grant is not raised through local taxes, it is offset by local taxes, so it is valid to look at any gap in weighted student grant to actual grant as redistributing local taxes to other districts.
+
+SHOW WORK HERE BELOW
+33.9% of the PPS line
+$122M district-wide
+$1.21M from the Sabin catchment area (33.9% × $3,573,594)
+$444 per residence (÷ 2,729)
+SHOW WORK ABOVE
 
 ---
 
