@@ -213,6 +213,39 @@ Outflow_pps = Equitable_Grant_pps - Grant_pps
             = $ 123M
 ```
 
+We calculate the percentage of `PORTLAND PUBLIC SCHOOLS` tax collected, `L_pps_collected`, that `Outflow_pps` represents as `Outflow_pps_percent`:
+
+```
+L_pps_collected = $ 360M
+Outflow_pps_percent = Outflow_pps / L_pps_collected
+                    = $ 123M / $ 360M
+                    = 34%
+```
+
+This percentage also says how much outflow came from the Sabin catchment area, `Outflow_sabin`, using the `PORTLAND PUBLIC SCHOOLS` tax collected in the Sabin catchment area, `L_sabin_collected`:
+
+```
+L_sabin_collected = $ 3.57M
+Outflow_sabin = Outflow_pps_percent * L_sabin_collected
+              = 34% * $ 3.57M
+              = $ 1.21M
+```
+
+And using the total paying properties in the Sabin catchment area, `Properties_sabin`, we can calculate the amount redistributed from each payer in the Sabin catchment area, `Outflow_sabin_per_payer`:
+
+```
+Properties_sabin = 2,729
+Outflow_sabin_per_payer = Outflow_sabin / Properties_sabin
+                        = $ 1.21M / 2,729
+                        = $443
+```
+
+### Conclusion
+
+In 2025, tax payers in the Sabin catchment area each paid **$443** that leaves the PPS district, while facing budget cuts and school closures.
+
+PPS as a whole lost **$123M** in 2025 while facing a $65M "budget shortfall".
+
 ---
 
 ## Waste
