@@ -86,32 +86,104 @@ General Fund expenditure growth is in line with the growth in PPS tax collection
 
 # Redistribution
 
-The state counts PPS's permanent-rate tax (90.5% of the PPS line) as local formula revenue and lowers the state grant by the same amount, so PPS residents fund a larger share of the statewide pot than PPS's share of students. The excess is the transfer to other districts.
-
-ADMw is Average Daily Membership, weighted: student enrollment with extra weight for special education, English learners, poverty and similar factors. "Extended" ADMw is the higher of the current and prior year.
+The state counts PPS's permanent-rate tax (90.5% of the PPS line) as local formula revenue and lowers the state grant by the same amount, so PPS residents fund a larger share of the statewide pot than PPS's share of students. The excess is the transfer to other districts. The formulas below are worked for tax year 2025; [Table](#transfer) gives every year.
 
 | **Symbol** | **Description** | **Value** |
 |--------|-------------|-------|
+| L_pps | PPS permanent-rate tax counted by the state | Calculated below |
 | T_line | PPS line received, district-wide | [Table](#district_tax), "PPS line" |
 | r_perm | PPS permanent rate, \$ per \$1,000 AV | 4.7743 |
 | r_line | Full PPS-line rate (permanent + gap) | 5.2781 |
-| L_pps | PPS permanent-rate tax counted by the state | [Table](#transfer), "PPS local counted" |
-| L_state | All districts' local formula revenue statewide | [Table](#transfer), "Statewide local" |
-| ADMw_pps | PPS extended weighted students | [Table](#transfer), "PPS ADMw" |
-| ADMw_state | Statewide extended weighted students | [Table](#transfer), "Statewide ADMw" |
-| S_local | PPS share of statewide local revenue | [Table](#transfer), "PPS share of local" |
-| S_admw | PPS share of statewide weighted students | [Table](#transfer), "PPS share of ADMw" |
-| Fair | PPS contribution if proportional to students | intermediate |
-| Excess | Amount transferred to other districts | [Table](#transfer), "Excess" |
-| Share_of_line | Excess as a fraction of the PPS line | [Table](#transfer), "Excess as % of PPS line" |
+
+Table sym_l_pps: Symbols for L_pps.
 
 ```
-L_pps         = T_line × r_perm / r_line
-S_local       = L_pps / L_state
-S_admw        = ADMw_pps / ADMw_state
-Fair          = S_admw × L_state
-Excess        = L_pps − Fair
+L_pps = T_line × r_perm / r_line
+      = $359.8M × 4.7743 / 5.2781
+      = $325.5M
+```
+
+| **Tax year** | **Statewide local (\$M)** |
+| :-: | --: |
+| 2025* | 2,576.4 |
+
+Table local_revenue: Statewide local formula revenue.
+
+From ODE's estimate.[^17] Common School Fund and other minor local items (about 2% of local revenue) are omitted. Tax year N = FY N/N+1.
+
+\* PPS line is the adopted budget; statewide local revenue is ODE's estimate.
+
+| **Symbol** | **Description** | **Value** |
+|--------|-------------|-------|
+| S_local | PPS share of statewide local revenue | Calculated below |
+| L_state | All districts' local formula revenue statewide | [Table](#local_revenue), "Statewide local" |
+
+Table sym_s_local: Symbols for S_local.
+
+```
+S_local = L_pps / L_state
+        = $325.5M / $2,576.4M
+        = 12.63%
+```
+
+ADMw is Average Daily Membership, weighted: student enrollment with extra weight for special education, English learners, poverty and similar factors. "Extended" ADMw is the higher of the current and prior year.
+
+| **Tax year** | **PPS ADMw** | **Statewide ADMw** |
+| :-: | --: | --: |
+| 2025 | 52,441 | 665,548 |
+
+Table admw: Extended weighted students.
+
+From Legislative Revenue Office school finance distributions.[^15][^16]
+
+| **Symbol** | **Description** | **Value** |
+|--------|-------------|-------|
+| S_admw | PPS share of statewide weighted students | Calculated below |
+| ADMw_pps | PPS extended weighted students | [Table](#admw), "PPS ADMw" |
+| ADMw_state | Statewide extended weighted students | [Table](#admw), "Statewide ADMw" |
+
+Table sym_s_admw: Symbols for S_admw.
+
+```
+S_admw = ADMw_pps / ADMw_state
+       = 52,441 / 665,548
+       = 7.88%
+```
+
+| **Symbol** | **Description** | **Value** |
+|--------|-------------|-------|
+| Fair | PPS contribution if proportional to students | Calculated below |
+
+Table sym_fair: Symbols for Fair.
+
+```
+Fair = S_admw × L_state
+     = 7.88% × $2,576.4M
+     = $203.0M
+```
+
+| **Symbol** | **Description** | **Value** |
+|--------|-------------|-------|
+| Excess | Amount transferred to other districts | Calculated below |
+
+Table sym_excess: Symbols for Excess.
+
+```
+Excess = L_pps − Fair
+       = $325.5M − $203.0M
+       = $122.5M
+```
+
+| **Symbol** | **Description** | **Value** |
+|--------|-------------|-------|
+| Share_of_line | Excess as a fraction of the PPS line | Calculated below |
+
+Table sym_share_of_line: Symbols for Share_of_line.
+
+```
 Share_of_line = Excess / T_line
+              = $122.5M / $359.8M
+              = 34.0%
 ```
 
 | **Tax year** | **PPS local counted (\$M)** | **Statewide local (\$M)** | **PPS ADMw** | **Statewide ADMw** | **PPS share of local** | **PPS share of ADMw** | **Excess (\$M)** | **Excess as % of PPS line** |

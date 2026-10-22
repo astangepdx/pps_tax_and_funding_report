@@ -285,7 +285,8 @@ local function Blocks(blocks)
 end
 
 -- Rewrite [Table](#key) / [Figure](#key) links to "Table~\ref{key}" so the text always
--- carries the current number. Runs after every block list has been processed.
+-- carries the current number; the whole "Table 1-1" is the link, not just the number.
+-- Runs after every block list has been processed.
 local function PandocDoc(doc)
   if not FORMAT:match("latex") then return nil end
   local heading_ids = {}
@@ -296,7 +297,7 @@ local function PandocDoc(doc)
       if not key then return nil end
       local kind = refs[key]
       if kind then
-        return pandoc.RawInline("latex", kind .. "~\\ref{" .. key .. "}")
+        return pandoc.RawInline("latex", "\\hyperref[" .. key .. "]{" .. kind .. "~\\ref*{" .. key .. "}}")
       end
       if not heading_ids[key] then
         io.stderr:write("docgen: link target #" .. key .. " matches no heading, table or figure key\n")
