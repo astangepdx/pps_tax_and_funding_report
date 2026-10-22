@@ -134,46 +134,84 @@ Increased cost against the District General Fund would not explain a widening fu
 
 ## Redistribution
 
-See [Statute Annotations](#statute-annotations) for a details analysis.  Below is a summary.
+See [Statute Annotations](#statute-annotations) for a detailed analysis.  Below is a summary.
 
-The state has a General Fund for schools.  The budget is determined by the legislature.  The budget the legislature sets has two funding components:
+### Funding by Statute
 
-- Local taxes - `L_pps`
-       - Each district has an established local tax rate, capped by Measure 50 in 1997
+Every 2 years the state sets a state-wide budget for school spending, `Pot` that includes both of these funding sources.
+
+- Local taxes - `L_state`
+       - Each district has an established local tax rate, fixed by Measure 50 in 1997
        - For PPS, this means the state takes 90% of the `PORTLAND PUBLIC SCHOOLS` amount into account
-       - The state totals the local taxes from across the state
-- General Fund
-       - The state has a General Fund for education, funded mainly through income taxes and lottery
+       - `L_state` is total of these local taxes from across the state
+- State School Fund - `SSF`
+       - The state has a State School Fund for education, funded from the state General Fund, mainly income taxes and lottery
 
-The state does not set an amount to pay from the general fund.  Instead the state sets a budget, `Pot`, and the amount each district gets from the state general fund is a grant added to the local taxes for the district.
-
-Then the state divides `Pot` by the total weighted students in the state, `ADMw_state`.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.
+`SSF` is an amount covering two years. It's split 49%/51% between those years, but for convenience to get an annual number will divide by 2.
 
 ```
-Rate_ADMw = Pot / ADMw_state`
+Pot = (SSF / 2) + L_state
+    = ($ 11.36B / 2) + $ 2.58B
+    = $ 8.26B
 ```
 
-Then the state looks at a district's share of weighted students compared to the state, `ADMw_pps`.  The amount of money granted from the state to the district is the per-student budget times the number of weighted students in the district, minus the locally raised taxes:
+The state divides `Pot` by the total weighted students in the state, `ADMw_state`.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.  The state uses this to calculate a funding rate per weighted student in the state, `Rate_ADMw`:
 
 ```
-Grant_pps = Rate_ADMw × ADMw_pps − L_pps
+ADMw_state = 665,548            # total weighted students in the state
+Rate_ADMw = Pot / ADMw_state
+          = $ 8.26B / 665,548
+          = $ 12,411
 ```
 
-This means that:
+Then the state looks at PPS's count of weighted students, `ADMw_pps`.  The amount of money the state determines the district needs, `Pot_pps` is based on the funding rate per weighted student times PPS's count of weighted students:
+
+```
+ADMw_pps = 52,441               # total weighted students in PPS
+Pot_pps = Rate_ADMw * ADMw_pps
+        = $ 12,411 * 52,441
+        = $ 651M
+```
+
+The amount of money granted from the state to PPS, `Grant_pps`, is the amount of money the state determines the district needs minus the locally raised taxes, `L_pps`:
+
+```
+L_pps = $ 326M                  # 90% of PORTLAND PUBLIC SCHOOLS tax
+Grant_pps = Pot_pps − L_pps
+          = $ 651M - $ 326M
+          = $ 325M
+```
+
+### Funding Model Issues
+
+This funding model causes local school funding volatility in obvious ways.
 
 - If a district's share of weighted students decreases, the grant from the state decreases
        - For example, if a student leaves the district
 - If a district's local tax revenue increases relative to other districts, the grant from the state decreases
        - For example, if a district's property values increase relative to other districts
 
-Though the grant is not raised through local taxes, it is offset by local taxes, so it is valid to look at any gap in weighted student grant to actual grant as redistributing local taxes to other districts.
+### Net Effect on PPS
 
-SHOW WORK HERE BELOW
-33.9% of the PPS line
-$122M district-wide
-$1.21M from the Sabin catchment area (33.9% × $3,573,594)
-$444 per residence (÷ 2,729)
-SHOW WORK ABOVE
+Though the grant is not raised through local taxes, it is offset by local taxes, so it is valid to look at any gap in weighted student grant to actual grant as redistributing local taxes to other districts.  To do this, we simply allocate the state fund `SSF` proportional to the total weighted studnts in PPS and calculate the difference in funding.
+
+```
+Equitable_Rate_ADMw = (SSF / 2) / ADMw_state
+                    = ($ 11.36B / 2) / 665,548
+                    = $ 8,538
+
+Equitable_Grant_pps = Equitable_Rate_ADMw * ADMw_pps
+                    = $ 8,538 * 52,441
+                    = $ 448M
+```
+
+The difference between `Equitable_Grant_pps` and `Grant_pps`, `Outflow_pps`, is money that is effectively re-distributed out of the PPS district to other districts:
+
+```
+Outflow_pps = Equitable_Grant_pps - Grant_pps
+            = $ 448M - $ 325M
+            = $ 123M
+```
 
 ---
 
