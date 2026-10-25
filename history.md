@@ -4,4 +4,5 @@ Alex Stange
 
 | **Rev** | **Date** | **Author** | **Description** |
 | :-: | :-: | :-: | --- |
+| R2 | 2026-10-25 | A. Stange | Added 'Conclusion' section. |
 | R1 | 2026-10-21 | A. Stange | Initial draft |

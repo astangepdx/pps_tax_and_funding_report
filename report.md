@@ -282,6 +282,16 @@ Table one_time: One-time resources.
 
 From the TSCC budget review, Portland Civic Lab and the PPS proposed budget.[^2][^6][^3]
 
+# Conclusion
+
+Portland Public Schools (PPS) claims to be facing a $ 65M shortfall in the 2027-28 school year.  The resulting drop in school resources is claimed to be the reason for consolidating schools into fewer buildings while leaving abandoned schools in the middles of neighborhoods throughout the city.
+
+After the 2023-24 school year, the federal ESSER Covid relief money ran out.  PPS spent the General Fund down approximately $ 60M from 2023-24 to 2026-27, when it only had $ 41M remaining.  Hence the need for budget cuts under the current funding model.
+
+The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing $ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the claimed 2027-28 shortfall.
+
+Thus taxyers in the PPS district already do pay enough taxes to keep the existing level of service, but part of these taxes is taken by the state and given to other districts.
+
 # Statute Annotations
 
 Text of ORS 327.008, 327.013 and 327.011 (2023 edition with 2024 changes, as published at oregon.public.law; official source https://www.oregonlegislature.gov/bills_laws/ors/ors327.html)
