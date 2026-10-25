@@ -26,10 +26,6 @@ There are a few material and cosmetic changes to be made to the report.
 
 The Statue Annotations in section 4 need to be more thoroughly reviewed, ideally by a lawyer or second set of eyes.
 
-## Cosmetic
-
-The report's formulas and symbols should be converted to LaTex for readability.
-
 ## Further Investigations
 
 If the taxpayers into Portland Public Schools are paying money out to districts in the rest of the state, it would be interesting to know other districts' permanent and local option tax revenue, their share of ADMw, and whether their "equitable grant" in section 3.2.3 results in a net outflow from that particular district.  From there, it would be interesting the impact or non-impact of Local Option taxes through the state.  Finally, it would be useful to explore voter support for Local Options in districts across the state.
