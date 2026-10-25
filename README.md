@@ -1,6 +1,6 @@
 # pps_tax_and_funding_report
 
-_See [PPS_Tax_and_Funding_Report_R1.pdf](releases/PPS_Tax_and_Funding_Report_R1.pdf) for the full report._
+_See [PPS_Tax_and_Funding_Report_R2.pdf](releases/PPS_Tax_and_Funding_Report_R2.pdf) for the full report._
 
 Data from the Sabin Elementary School catchment area and Portland Public Schools (PPS) district indicate that property tax revenue has increased steadily from 2021 through 2025, outpacing both district cost increases and inflation indexes.
 
@@ -14,7 +14,7 @@ Portland Public Schools (PPS) claims to be facing a $ 65M shortfall in the 2027-
 
 After the 2023-24 school year, the federal ESSER Covid relief money ran out.  PPS spent the General Fund down approximately $ 60M from 2023-24 to 2026-27, when it only had $ 41M remaining.  Hence the need for budget cuts under the current funding model.
 
-The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing $ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the claimed 2027-28 shortfall.
+The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing $ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the 2027-28 shortfall.
 
 Thus taxyers in the PPS district already do pay enough taxes to keep the existing level of service, but part of these taxes is taken by the state and given to other districts.
 

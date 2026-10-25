@@ -14,7 +14,7 @@ It is assumed this is a recent issue. Looking back over the last few years we sh
 
 ## Why Sabin?
 
-As shown in [astange/sabin_tax_report](https://github.com/astangepdx/sabin_tax_report), the Sabin catchment area contributed $6.7M to PPS in property taxes in 2025.  This amount has increased at 5.2% annualized since 2021, outpacing inflation measures.  This is not meant to imply that Sabin catchment area taxes are only for Sabin Elementary.  It is meant to imply that taxpayers in the Sabin catchment area have are paying for a level of service from Portland Public Schools that is decreasing, and PPS is not offering to reduce taxes.  Why are we getting less service for the same money?
+As shown in [astange/sabin_tax_report](https://github.com/astangepdx/sabin_tax_report), the Sabin catchment area contributed \$6.7M to PPS in property taxes in 2025.  This amount has increased at 5.2% annualized since 2021, outpacing inflation measures.  This is not meant to imply that Sabin catchment area taxes are only for Sabin Elementary.  It is meant to imply that taxpayers in the Sabin catchment area have are paying for a level of service from Portland Public Schools that is decreasing, and PPS is not offering to reduce taxes.  Why are we getting less service for the same money?
 
 Less compared to when?  I chose to look at the years 2021 through 2025.  Presumably something has happened relatively recently that requires closing Sabin and many other schools.
 
@@ -46,13 +46,15 @@ The following line items appear on all but a few percent of property tax stateme
 
 CAGR is calculated as follows:
 
-```
-T_a      = line total in start tax year a
-T_b      = line total in end tax year b
-n        = b − a                              # number of years
-G_yoy    = T_b / T_a − 1                      # when n = 1
-G_cagr   = (T_b / T_a) ^ (1/n) − 1            # when n > 1
-```
+$$
+\begin{aligned}
+T_a &= \text{line total in start tax year } a \\
+T_b &= \text{line total in end tax year } b \\
+n &= b - a \qquad \text{number of years} \\
+G_{\text{yoy}} &= \frac{T_b}{T_a} - 1 \qquad \text{when } n = 1 \\
+G_{\text{cagr}} &= \left(\frac{T_b}{T_a}\right)^{1/n} - 1 \qquad \text{when } n > 1
+\end{aligned}
+$$
 
 ## PPS District Collection
 
@@ -91,12 +93,12 @@ District General Fund expenditures (the operating budget), every dollar, by obje
 
 | **Category** | **FY 2025-26 Cost** | **Cost CAGR since FY 2022-23** |
 |---------------------|:--:|:--:|
-| Teaching and school staff salaries (licensed, classified, substitutes/extra duty) | $ 364M | +3.1%/yr |
-| Retirement and benefits (PERS incl. pension-bond charges, health, FICA) | $ 248M | +9.6 %/yr |
-| Purchased services (contracts, utilities, transportation) | $ 104M | −0.6 %/yr |
-| Administration salaries (administrators, non-represented staff) | $ 78M | +4.5 %/yr |
-| Supplies, capital outlay, other | $ 13M | −18.9 %/yr |
-| **Total General Fund expenditures** | **$ 810M** | **+3.9 %/yr** |
+| Teaching and school staff salaries (licensed, classified, substitutes/extra duty) | \$ 364M | +3.1%/yr |
+| Retirement and benefits (PERS incl. pension-bond charges, health, FICA) | \$ 248M | +9.6 %/yr |
+| Purchased services (contracts, utilities, transportation) | \$ 104M | −0.6 %/yr |
+| Administration salaries (administrators, non-represented staff) | \$ 78M | +4.5 %/yr |
+| Supplies, capital outlay, other | \$ 13M | −18.9 %/yr |
+| **Total General Fund expenditures** | **\$ 810M** | **+3.9 %/yr** |
 
 Table gf_expenditures: General Fund expenditures by object.
 
@@ -138,49 +140,57 @@ See [Statute Annotations](#statute-annotations) for a detailed analysis.  Below 
 
 ### Funding by Statute
 
-Every 2 years the state sets a state-wide budget for school spending, `Pot` that includes both of these funding sources.
+Every 2 years the state sets a state-wide budget for school spending, $\text{Pot}$ that includes both of these funding sources.
 
-- Local taxes - `L_state`
+- Local taxes - $L_{\text{state}}$
        - Each district has an established local tax rate, fixed by Measure 50 in 1997
        - For PPS, this means the state takes 90% of the `PORTLAND PUBLIC SCHOOLS` amount into account
-       - `L_state` is total of these local taxes from across the state
-- State School Fund - `SSF`
+       - $L_{\text{state}}$ is total of these local taxes from across the state
+- State School Fund - $\text{SSF}$
        - The state has a State School Fund for education, funded from the state General Fund, mainly income taxes and lottery
 
-`SSF` is an amount covering two years. It's split 49%/51% between those years, but for convenience to get an annual number will divide by 2.
+$\text{SSF}$ is an amount covering two years. It's split 49%/51% between those years, but for convenience to get an annual number will divide by 2.
 
-```
-Pot = (SSF / 2) + L_state
-    = ($ 11.36B / 2) + $ 2.58B
-    = $ 8.26B
-```
+$$
+\begin{aligned}
+\text{Pot} &= \frac{\text{SSF}}{2} + L_{\text{state}} \\
+&= \frac{\$11.36\text{B}}{2} + \$2.58\text{B} \\
+&= \$8.26\text{B}
+\end{aligned}
+$$
 
-The state divides `Pot` by the total weighted students in the state, `ADMw_state`.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.  The state uses this to calculate a funding rate per weighted student in the state, `Rate_ADMw`:
+The state divides $\text{Pot}$ by the total weighted students in the state, $\text{ADMw}_{\text{state}}$.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.  The state uses this to calculate a funding rate per weighted student in the state, $\text{Rate}_{\text{ADMw}}$:
 
-```
-ADMw_state = 665,548            # total weighted students in the state
-Rate_ADMw = Pot / ADMw_state
-          = $ 8.26B / 665,548
-          = $ 12,411
-```
+$$
+\begin{aligned}
+\text{ADMw}_{\text{state}} &= 665{,}548 \qquad \text{total weighted students in the state} \\
+\text{Rate}_{\text{ADMw}} &= \frac{\text{Pot}}{\text{ADMw}_{\text{state}}} \\
+&= \frac{\$8.26\text{B}}{665{,}548} \\
+&= \$12{,}411
+\end{aligned}
+$$
 
-Then the state looks at PPS's count of weighted students, `ADMw_pps`.  The amount of money the state determines the district needs, `Pot_pps` is based on the funding rate per weighted student times PPS's count of weighted students:
+Then the state looks at PPS's count of weighted students, $\text{ADMw}_{\text{pps}}$.  The amount of money the state determines the district needs, $\text{Pot}_{\text{pps}}$ is based on the funding rate per weighted student times PPS's count of weighted students:
 
-```
-ADMw_pps = 52,441               # total weighted students in PPS
-Pot_pps = Rate_ADMw * ADMw_pps
-        = $ 12,411 * 52,441
-        = $ 651M
-```
+$$
+\begin{aligned}
+\text{ADMw}_{\text{pps}} &= 52{,}441 \qquad \text{total weighted students in PPS} \\
+\text{Pot}_{\text{pps}} &= \text{Rate}_{\text{ADMw}} \times \text{ADMw}_{\text{pps}} \\
+&= \$12{,}411 \times 52{,}441 \\
+&= \$651\text{M}
+\end{aligned}
+$$
 
-The amount of money granted from the state to PPS, `Grant_pps`, is the amount of money the state determines the district needs minus the locally raised taxes, `L_pps`:
+The amount of money granted from the state to PPS, $\text{Grant}_{\text{pps}}$, is the amount of money the state determines the district needs minus the locally raised taxes, $L_{\text{pps}}$:
 
-```
-L_pps = $ 326M                  # 90% of PORTLAND PUBLIC SCHOOLS tax
-Grant_pps = Pot_pps − L_pps
-          = $ 651M - $ 326M
-          = $ 325M
-```
+$$
+\begin{aligned}
+L_{\text{pps}} &= \$326\text{M} \qquad \text{90\% of PORTLAND PUBLIC SCHOOLS tax} \\
+\text{Grant}_{\text{pps}} &= \text{Pot}_{\text{pps}} - L_{\text{pps}} \\
+&= \$651\text{M} - \$326\text{M} \\
+&= \$325\text{M}
+\end{aligned}
+$$
 
 ### Funding Model Issues
 
@@ -193,58 +203,65 @@ This funding model causes local school funding volatility in obvious ways.
 
 ### Net Effect on PPS
 
-Though the grant is not raised through local taxes, it is offset by local taxes, so it is valid to look at any gap in weighted student grant to actual grant as redistributing local taxes to other districts.  To do this, we simply allocate the state fund `SSF` proportional to the total weighted studnts in PPS and calculate the difference in funding.
+Though the grant is not raised through local taxes, it is offset by local taxes, so it is valid to look at any gap in weighted student grant to actual grant as redistributing local taxes to other districts.  To do this, we simply allocate the state fund $\text{SSF}$ proportional to the total weighted studnts in PPS and calculate the difference in funding.
 
-```
-Equitable_Rate_ADMw = (SSF / 2) / ADMw_state
-                    = ($ 11.36B / 2) / 665,548
-                    = $ 8,538
+$$
+\begin{aligned}
+\text{Rate}_{\text{equitable ADMw}} &= \frac{\text{SSF} / 2}{\text{ADMw}_{\text{state}}} \\
+&= \frac{\$11.36\text{B} / 2}{665{,}548} \\
+&= \$8{,}538 \\[1ex]
+\text{Grant}_{\text{equitable pps}} &= \text{Rate}_{\text{equitable ADMw}} \times \text{ADMw}_{\text{pps}} \\
+&= \$8{,}538 \times 52{,}441 \\
+&= \$448\text{M}
+\end{aligned}
+$$
 
-Equitable_Grant_pps = Equitable_Rate_ADMw * ADMw_pps
-                    = $ 8,538 * 52,441
-                    = $ 448M
-```
+The difference between $\text{Grant}_{\text{equitable pps}}$ and $\text{Grant}_{\text{pps}}$, $\text{Outflow}_{\text{pps}}$, is money that is effectively re-distributed out of the PPS district to other districts:
 
-The difference between `Equitable_Grant_pps` and `Grant_pps`, `Outflow_pps`, is money that is effectively re-distributed out of the PPS district to other districts:
+$$
+\begin{aligned}
+\text{Outflow}_{\text{pps}} &= \text{Grant}_{\text{equitable pps}} - \text{Grant}_{\text{pps}} \\
+&= \$448\text{M} - \$325\text{M} \\
+&= \$123\text{M}
+\end{aligned}
+$$
 
-```
-Outflow_pps = Equitable_Grant_pps - Grant_pps
-            = $ 448M - $ 325M
-            = $ 123M
-```
+We calculate the percentage of `PORTLAND PUBLIC SCHOOLS` tax collected, $L_{\text{pps collected}}$, that $\text{Outflow}_{\text{pps}}$ represents as $\text{Outflow}_{\text{pps percent}}$:
 
-We calculate the percentage of `PORTLAND PUBLIC SCHOOLS` tax collected, `L_pps_collected`, that `Outflow_pps` represents as `Outflow_pps_percent`:
+$$
+\begin{aligned}
+L_{\text{pps collected}} &= \$360\text{M} \\
+\text{Outflow}_{\text{pps percent}} &= \frac{\text{Outflow}_{\text{pps}}}{L_{\text{pps collected}}} \\
+&= \frac{\$123\text{M}}{\$360\text{M}} \\
+&= 34\%
+\end{aligned}
+$$
 
-```
-L_pps_collected = $ 360M
-Outflow_pps_percent = Outflow_pps / L_pps_collected
-                    = $ 123M / $ 360M
-                    = 34%
-```
+This percentage also says how much outflow came from the Sabin catchment area, $\text{Outflow}_{\text{sabin}}$, using the `PORTLAND PUBLIC SCHOOLS` tax collected in the Sabin catchment area, $L_{\text{sabin collected}}$:
 
-This percentage also says how much outflow came from the Sabin catchment area, `Outflow_sabin`, using the `PORTLAND PUBLIC SCHOOLS` tax collected in the Sabin catchment area, `L_sabin_collected`:
+$$
+\begin{aligned}
+L_{\text{sabin collected}} &= \$3.57\text{M} \\
+\text{Outflow}_{\text{sabin}} &= \text{Outflow}_{\text{pps percent}} \times L_{\text{sabin collected}} \\
+&= 34\% \times \$3.57\text{M} \\
+&= \$1.21\text{M}
+\end{aligned}
+$$
 
-```
-L_sabin_collected = $ 3.57M
-Outflow_sabin = Outflow_pps_percent * L_sabin_collected
-              = 34% * $ 3.57M
-              = $ 1.21M
-```
+And using the total paying properties in the Sabin catchment area, $\text{Properties}_{\text{sabin}}$, we can calculate the amount redistributed from each payer in the Sabin catchment area, $\text{Outflow}_{\text{sabin per payer}}$:
 
-And using the total paying properties in the Sabin catchment area, `Properties_sabin`, we can calculate the amount redistributed from each payer in the Sabin catchment area, `Outflow_sabin_per_payer`:
-
-```
-Properties_sabin = 2,729
-Outflow_sabin_per_payer = Outflow_sabin / Properties_sabin
-                        = $ 1.21M / 2,729
-                        = $443
-```
+$$
+\begin{aligned}
+\text{Properties}_{\text{sabin}} &= 2{,}729 \\
+\text{Outflow}_{\text{sabin per payer}} &= \frac{\text{Outflow}_{\text{sabin}}}{\text{Properties}_{\text{sabin}}} \\
+&= \frac{\$1.21\text{M}}{2{,}729} \\
+&= \$443
+\end{aligned}
+$$
 
 ### Conclusion
 
-In 2025, tax payers in the Sabin catchment area each paid **$443** that leaves the PPS district, while facing budget cuts and school closures.
-
-PPS as a whole lost **$123M** in 2025 while facing a $65M "budget shortfall".
+In 2025, tax payers in the Sabin catchment area each paid **\$443** that leaves the PPS district, while facing budget cuts and school closures.  At the district level, tax payers paid **\$123M** that leaves the PPS district, almost 2x the projected shortfall in 2027-28.
 
 ---
 
@@ -284,11 +301,11 @@ From the TSCC budget review, Portland Civic Lab and the PPS proposed budget.[^2]
 
 # Conclusion
 
-Portland Public Schools (PPS) claims to be facing a $ 65M shortfall in the 2027-28 school year.  The resulting drop in school resources is claimed to be the reason for consolidating schools into fewer buildings while leaving abandoned schools in the middles of neighborhoods throughout the city.
+Portland Public Schools (PPS) claims to be facing a \$ 65M shortfall in the 2027-28 school year.  The resulting drop in school resources is claimed to be the reason for consolidating schools into fewer buildings while leaving abandoned schools in the middles of neighborhoods throughout the city.
 
-After the 2023-24 school year, the federal ESSER Covid relief money ran out.  PPS spent the General Fund down approximately $ 60M from 2023-24 to 2026-27, when it only had $ 41M remaining.  Hence the need for budget cuts under the current funding model.
+After the 2023-24 school year, the federal ESSER Covid relief money ran out.  PPS spent the General Fund down approximately \$ 60M from 2023-24 to 2026-27, when it only had \$ 41M remaining.  Hence the need for budget cuts under the current funding model.
 
-The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing $ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the claimed 2027-28 shortfall.
+The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing \$ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the claimed 2027-28 shortfall.
 
 Thus taxyers in the PPS district already do pay enough taxes to keep the existing level of service, but part of these taxes is taken by the state and given to other districts.
 
@@ -310,74 +327,80 @@ Values are for tax year 2025 (FY 2025-26) unless noted. Statute text is unchange
 
 > General Purpose Grant = Funding Percentage × Target Grant × District extended ADMw. For the purpose of the calculation made under this subsection:
 
-```
-GPG_pps   = general purpose grant to PPS
-F         = funding percentage, computed in (1)(a)
-TG_pps    = target grant for PPS, computed in (1)(b)
-ADMw_pps  = PPS extended weighted average daily membership, computed in (1)(c)
-Rate_ADMw = general purpose grant per extended ADMw, computed in (1)(a)
-
-GPG_pps = F × TG_pps × ADMw_pps
-        = Rate_ADMw × ADMw_pps         # F × TG_pps published only as the product Rate_ADMw
-        = $11,834 × 52,441
-        ≈ $621M
-```
+$$
+\begin{aligned}
+\text{GPG}_{\text{pps}} &= \text{general purpose grant to PPS} \\
+F &= \text{funding percentage, computed in (1)(a)} \\
+\text{TG}_{\text{pps}} &= \text{target grant for PPS, computed in (1)(b)} \\
+\text{ADMw}_{\text{pps}} &= \text{PPS extended weighted average daily membership, computed in (1)(c)} \\
+\text{Rate}_{\text{ADMw}} &= \text{general purpose grant per extended ADMw, computed in (1)(a)} \\[1ex]
+\text{GPG}_{\text{pps}} &= F \times \text{TG}_{\text{pps}} \times \text{ADMw}_{\text{pps}} \\
+&= \text{Rate}_{\text{ADMw}} \times \text{ADMw}_{\text{pps}} \qquad F \times \text{TG}_{\text{pps}} \text{ published only as the product } \text{Rate}_{\text{ADMw}} \\
+&= \$11{,}834 \times 52{,}441 \\
+&\approx \$621\text{M}
+\end{aligned}
+$$
 
 > (a) The funding percentage shall be calculated by the Superintendent of Public Instruction to distribute as nearly as practicable the total sum of money available for distribution.
 
-```
-Pot           = total sum of money available for distribution to districts
-SSF_districts = the part of SSF distributed to school districts in the year, 
-                after ESD share and set-asides
-L_state       = all districts' local revenue, 
-                computed in 327.011, summed
-ADMw_state    = statewide extended weighted average daily membership, computed in (1)(c)
-
-Pot           = SSF_districts + L_state
-              = $7,876M                # FY 2025-26, LRO
-L_state       = $2,576M                # ODE estimate
-SSF_districts = Pot − L_state
-              = $5,300M
-Rate_ADMw     = Pot / ADMw_state
-              = $7,876M / 665,548
-              = $11,834
-F             = Rate_ADMw / TG_pps     # chosen so Σ GPG over all districts = Pot
-```
+$$
+\begin{aligned}
+\text{Pot} &= \text{total sum of money available for distribution to districts} \\
+\text{SSF}_{\text{districts}} &= \text{the part of SSF distributed to school districts in the year,} \\
+&\phantom{{}={}} \text{after ESD share and set-asides} \\
+L_{\text{state}} &= \text{all districts' local revenue,} \\
+&\phantom{{}={}} \text{computed in 327.011, summed} \\
+\text{ADMw}_{\text{state}} &= \text{statewide extended weighted average daily membership, computed in (1)(c)} \\[1ex]
+\text{Pot} &= \text{SSF}_{\text{districts}} + L_{\text{state}} \\
+&= \$7{,}876\text{M} \qquad \text{FY 2025-26, LRO} \\
+L_{\text{state}} &= \$2{,}576\text{M} \qquad \text{ODE estimate} \\
+\text{SSF}_{\text{districts}} &= \text{Pot} - L_{\text{state}} \\
+&= \$5{,}300\text{M} \\
+\text{Rate}_{\text{ADMw}} &= \frac{\text{Pot}}{\text{ADMw}_{\text{state}}} \\
+&= \frac{\$7{,}876\text{M}}{665{,}548} \\
+&= \$11{,}834 \\
+F &= \frac{\text{Rate}_{\text{ADMw}}}{\text{TG}_{\text{pps}}} \qquad \text{chosen so } \textstyle\sum \text{GPG over all districts} = \text{Pot}
+\end{aligned}
+$$
 
 Pot from LRO;[^7] L_state from ODE.[^8]
 
 > (b) Target Grant = Statewide Target per ADMw Grant + Teacher Experience Factor. For the purpose of the calculation made under this paragraph:
 
-```
-STG     = statewide target per ADMw grant, (A)
-TEF_pps = teacher experience factor for PPS, (B)
+$$
+\begin{aligned}
+\text{STG} &= \text{statewide target per ADMw grant, (A)} \\
+\text{TEF}_{\text{pps}} &= \text{teacher experience factor for PPS, (B)} \\[1ex]
+\text{TG}_{\text{pps}} &= \text{STG} + \text{TEF}_{\text{pps}}
+\end{aligned}
+$$
 
-TG_pps = STG + TEF_pps
-```
+> (A) Statewide Target per ADMw Grant = \$4,500.
 
-> (A) Statewide Target per ADMw Grant = $4,500.
+$$
+\text{STG} = \$4{,}500
+$$
 
-```
-STG = $4,500
-```
+> (B) Teacher Experience Factor = \$25 × {District average teacher experience − statewide average teacher experience}. As used in this subparagraph, "average teacher experience" means the average, in years, of teaching experience of licensed teachers as reported to the Department of Education.
 
-> (B) Teacher Experience Factor = $25 × {District average teacher experience − statewide average teacher experience}. As used in this subparagraph, "average teacher experience" means the average, in years, of teaching experience of licensed teachers as reported to the Department of Education.
-
-```
-exp_pps   = PPS average licensed-teacher experience, years      # not published
-exp_state = statewide average licensed-teacher experience, years # not published
-
-TEF_pps = $25 × (exp_pps − exp_state)
-```
+$$
+\begin{aligned}
+\text{exp}_{\text{pps}} &= \text{PPS average licensed-teacher experience, years} \qquad \text{not published} \\
+\text{exp}_{\text{state}} &= \text{statewide average licensed-teacher experience, years} \qquad \text{not published} \\[1ex]
+\text{TEF}_{\text{pps}} &= \$25 \times (\text{exp}_{\text{pps}} - \text{exp}_{\text{state}})
+\end{aligned}
+$$
 
 > (c) District extended ADMw = ADMw or ADMw of the prior year, whichever is greater. The calculation of the district extended ADMw must be made as provided by ORS 338.155 if a public charter school is located in the school district. For the purpose of this paragraph:
 
-```
-ADMw_pps   = max(ADMw this year, ADMw prior year) for PPS
-           = 52,441                   # FY 2025-26, LRO
-ADMw_state = Σ over all districts of max(ADMw this year, ADMw prior year)
-           = 665,548                  # FY 2025-26, LRO
-```
+$$
+\begin{aligned}
+\text{ADMw}_{\text{pps}} &= \max(\text{ADMw this year}, \text{ADMw prior year}) \text{ for PPS} \\
+&= 52{,}441 \qquad \text{FY 2025-26, LRO} \\
+\text{ADMw}_{\text{state}} &= \sum_{\text{all districts}} \max(\text{ADMw this year}, \text{ADMw prior year}) \\
+&= 665{,}548 \qquad \text{FY 2025-26, LRO}
+\end{aligned}
+$$
 
 ADMw from LRO.[^7]
 
@@ -395,41 +418,44 @@ ADMw from LRO.[^7]
 >
 > (vi) The amount determined under ORS 327.077 for each remote small elementary school and for each small high school in the district.
 
-```
-ADM         = average daily membership, unweighted student count
-SpEd        = students eligible for special education, capped at 0.11 × ADM
-ELL         = students enrolled in an English language learner program
-HS_only     = students in grades 9–12 where the district serves only 9–12
-Elem_only   = students in K–6 or K–8 where the district serves only those grades
-Poverty     = students in poverty families
-Foster      = children in foster homes
-ND          = children in facilities for neglected and delinquent children
-RemoteSmall = remote small elementary and small high school amount, ORS 327.077
-
-ADMw = ADM
-     + 1.0  × SpEd
-     + 0.5  × ELL
-     + 0.2  × HS_only
-     − 0.1  × Elem_only
-     + 0.25 × (Poverty + Foster + ND)
-     + RemoteSmall
-```
+$$
+\begin{aligned}
+\text{ADM} &= \text{average daily membership, unweighted student count} \\
+\text{SpEd} &= \text{students eligible for special education, capped at } 0.11 \times \text{ADM} \\
+\text{ELL} &= \text{students enrolled in an English language learner program} \\
+\text{HS}_{\text{only}} &= \text{students in grades 9–12 where the district serves only 9–12} \\
+\text{Elem}_{\text{only}} &= \text{students in K–6 or K–8 where the district serves only those grades} \\
+\text{Poverty} &= \text{students in poverty families} \\
+\text{Foster} &= \text{children in foster homes} \\
+\text{ND} &= \text{children in facilities for neglected and delinquent children} \\
+\text{RemoteSmall} &= \text{remote small elementary and small high school amount, ORS 327.077} \\[1ex]
+\text{ADMw} &= \text{ADM} \\
+&\quad + 1.0 \times \text{SpEd} \\
+&\quad + 0.5 \times \text{ELL} \\
+&\quad + 0.2 \times \text{HS}_{\text{only}} \\
+&\quad - 0.1 \times \text{Elem}_{\text{only}} \\
+&\quad + 0.25 \times (\text{Poverty} + \text{Foster} + \text{ND}) \\
+&\quad + \text{RemoteSmall}
+\end{aligned}
+$$
 
 > (B) All numbers of children used for the computation in this paragraph must reflect any district consolidations that have occurred since the numbers were compiled.
 
 > (C) The total additional weight that shall be assigned to any student in average daily membership in a district, exclusive of students described in subparagraph (A)(v) and (vi) of this paragraph, may not exceed 2.0.
 
-```
-1.0 × SpEd + 0.5 × ELL + 0.2 × HS_only − 0.1 × Elem_only ≤ 2.0   # per student
-```
+$$
+1.0 \times \text{SpEd} + 0.5 \times \text{ELL} + 0.2 \times \text{HS}_{\text{only}} - 0.1 \times \text{Elem}_{\text{only}} \le 2.0 \qquad \text{per student}
+$$
 
 ### (2) High cost disabilities grant
 
 > High cost disabilities grant = the total amount received by a school district under ORS 327.348 for providing special education and related services to resident pupils with disabilities.
 
-```
-HCD_pps = high cost disabilities grant to PPS   # not published
-```
+$$
+\begin{aligned}
+\text{HCD}_{\text{pps}} &= \text{high cost disabilities grant to PPS} \qquad \text{not published}
+\end{aligned}
+$$
 
 ### (3) Transportation grant
 
@@ -437,13 +463,14 @@ HCD_pps = high cost disabilities grant to PPS   # not published
 >
 > (b) Each fiscal year, the Department of Education shall rank school districts based on the approved transportation costs per ADM of each school district, ranking the school district with the highest approved transportation costs per ADM at the top of the order.
 
-```
-TR_pps = transportation grant to PPS
-TC_pps = PPS approved transportation costs                       # not published
-
-TR_pps = {0.70 | 0.80 | 0.90} × TC_pps   # rate depends on PPS's percentile rank of TC/ADM
-       ≈ $13M                            # LRO formula revenue $634M − GPG_pps
-```
+$$
+\begin{aligned}
+\text{TR}_{\text{pps}} &= \text{transportation grant to PPS} \\
+\text{TC}_{\text{pps}} &= \text{PPS approved transportation costs} \qquad \text{not published} \\[1ex]
+\text{TR}_{\text{pps}} &= \{0.70 \mid 0.80 \mid 0.90\} \times \text{TC}_{\text{pps}} \qquad \text{rate depends on PPS's percentile rank of TC/ADM} \\
+&\approx \$13\text{M} \qquad \text{LRO formula revenue \$634M} - \text{GPG}_{\text{pps}}
+\end{aligned}
+$$
 
 Formula revenue from LRO.[^7]
 
@@ -455,104 +482,128 @@ Formula revenue from LRO.[^7]
 
 ### (1) Local Revenues are the total of the following:
 
-```
-L_pps = PPS local revenue
-
-L_pps = (a) + (b) + (c) + (d) + (e) + (f) + (g) + (h) + (i) − (2)(a) − (2)(b)
-```
+$$
+\begin{aligned}
+L_{\text{pps}} &= \text{PPS local revenue} \\[1ex]
+L_{\text{pps}} &= \text{(a)} + \text{(b)} + \text{(c)} + \text{(d)} + \text{(e)} + \text{(f)} + \text{(g)} + \text{(h)} + \text{(i)} - \text{(2)(a)} - \text{(2)(b)}
+\end{aligned}
+$$
 
 > (a) The amount of revenue offset against local property taxes as determined by the Department of Revenue under ORS 311.175 (3)(a)(A).
 
-```
-$0                                   # PPS
-```
+$$
+\begin{aligned}
+&\$0 \qquad \text{PPS}
+\end{aligned}
+$$
 
 > (b) The amount of property taxes actually received by the district, including penalties and interest on taxes.
 
-```
-T_line = PPS permanent-rate property tax actually received, the PPS line
-       = $360M                       # FY 2025-26 approved budget [^2]
-T_lo   = PPS local option tax actually received, the PPS_LOC_OPT line
-       = $109M                       # FY 2025-26 approved budget [^2]
-```
+$$
+\begin{aligned}
+T_{\text{line}} &= \text{PPS permanent-rate property tax actually received, the PPS line} \\
+&= \$360\text{M} \qquad \text{FY 2025-26 approved budget} \\
+T_{\text{lo}} &= \text{PPS local option tax actually received, the PPS\_LOC\_OPT line} \\
+&= \$109\text{M} \qquad \text{FY 2025-26 approved budget}
+\end{aligned}
+$$
+
+Approved budget from TSCC.[^2]
 
 > (c) The amount of revenue received by the district from the Common School Fund under ORS 327.403 to 327.410.
 
-```
-CSF_pps = Common School Fund received by PPS
-        ≈ $6.6M
-```
+$$
+\begin{aligned}
+\text{CSF}_{\text{pps}} &= \text{Common School Fund received by PPS} \\
+&\approx \$6.6\text{M}
+\end{aligned}
+$$
 
 > (d) The amount of revenue received by the district from the county school fund.
 
-```
-CountyFund_pps = county school fund received by PPS   # not published
-```
+$$
+\begin{aligned}
+\text{CountyFund}_{\text{pps}} &= \text{county school fund received by PPS} \qquad \text{not published}
+\end{aligned}
+$$
 
 > (e) The amount of revenue received by the district from state managed forestlands under ORS 530.115 (1)(b) and (c).
 
-```
-$0                                   # PPS
-```
+$$
+\begin{aligned}
+&\$0 \qquad \text{PPS}
+\end{aligned}
+$$
 
 > (f) Moneys received in lieu of property taxes.
 
-```
-PILT_pps = payments in lieu of property taxes received by PPS
-         ≈ $0.5M
-```
+$$
+\begin{aligned}
+\text{PILT}_{\text{pps}} &= \text{payments in lieu of property taxes received by PPS} \\
+&\approx \$0.5\text{M}
+\end{aligned}
+$$
 
 > (g) Federal funds received without specific application by the school district and that are not deemed under federal law to be nonsupplantable.
 
-```
-Fed_pps = unapplied-for federal funds received by PPS   # not published
-```
+$$
+\begin{aligned}
+\text{Fed}_{\text{pps}} &= \text{unapplied-for federal funds received by PPS} \qquad \text{not published}
+\end{aligned}
+$$
 
 > (h) Any positive amount obtained by subtracting the operating property taxes actually imposed by the district, based on the rate certified pursuant to ORS 310.060, from the amount that would have been imposed by the district if the district had certified the maximum rate of operating property taxes allowed by law.
 
-```
-r_perm = PPS permanent rate, the maximum operating rate allowed by law, $ per $1,000 AV
-       = 4.7743
-$0                                   # PPS certifies its full rate
-```
+$$
+\begin{aligned}
+r_{\text{perm}} &= \text{PPS permanent rate, the maximum operating rate allowed by law, \$ per \$1,000 AV} \\
+&= 4.7743 \\
+&\$0 \qquad \text{PPS certifies its full rate}
+\end{aligned}
+$$
 
 > (i) Any amount distributed to the district in the prior fiscal year under ORS 327.019 (8).
 
-```
-$0                                   # PPS
-```
+$$
+\begin{aligned}
+&\$0 \qquad \text{PPS}
+\end{aligned}
+$$
 
 ### (2) Local Revenues do not include:
 
-> (a) If a school district imposes local option taxes pursuant to ORS 280.040 to 280.145, an amount equal to the least of: (A) The amount of revenue actually received by the district from local option taxes imposed pursuant to ORS 280.040 to 280.145; (B) Twenty-five percent of the total received by the school district from the general purpose grant, the transportation grant and the high cost disabilities grant of the district, as those grants are calculated under ORS 327.013; or (C) $2,000 per district extended ADMw, as calculated under ORS 327.013, increased each fiscal year by three percent above the amount allowed per district extended ADMw for the prior fiscal year.
+> (a) If a school district imposes local option taxes pursuant to ORS 280.040 to 280.145, an amount equal to the least of: (A) The amount of revenue actually received by the district from local option taxes imposed pursuant to ORS 280.040 to 280.145; (B) Twenty-five percent of the total received by the school district from the general purpose grant, the transportation grant and the high cost disabilities grant of the district, as those grants are calculated under ORS 327.013; or (C) \$2,000 per district extended ADMw, as calculated under ORS 327.013, increased each fiscal year by three percent above the amount allowed per district extended ADMw for the prior fiscal year.
 
-```
-LO_cap = local option amount excluded from local revenue
-cap_C  = $2,000 per extended ADMw, grown 3% per year  # not computed; exceeds T_lo / ADMw_pps
+$$
+\begin{aligned}
+\text{LO}_{\text{cap}} &= \text{local option amount excluded from local revenue} \\
+\text{cap}_{C} &= \text{\$2,000 per extended ADMw, grown 3\% per year} \\
+&\phantom{{}={}} \qquad \text{not computed; exceeds } T_{\text{lo}} / \text{ADMw}_{\text{pps}} \\[1ex]
+\text{LO}_{\text{cap}} &= \min\bigl(T_{\text{lo}}, \\
+&\qquad\quad 0.25 \times (\text{GPG}_{\text{pps}} + \text{TR}_{\text{pps}} + \text{HCD}_{\text{pps}}), \\
+&\qquad\quad \text{cap}_{C} \times \text{ADMw}_{\text{pps}}\bigr) \\
+&= \min\bigl(\$109\text{M},\ {\approx}\,\$158\text{M},\ {>}\,\$109\text{M}\bigr) \\
+&= \$109\text{M}
+\end{aligned}
+$$
 
-LO_cap = min( T_lo,
-              0.25 × (GPG_pps + TR_pps + HCD_pps),
-              cap_C × ADMw_pps )
-       = min( $109M, ≈ $158M, > $109M )
-       = $109M
-```
+> (b) For a school district with a statutory rate limit on July 1, 2003, that is greater than \$4.50 per \$1,000 of assessed value, the amount of property taxes actually received by the district, including penalties and interest on taxes, that results from an increase in the rate of ad valorem property tax of the district allowed under Article XI, section 11 (5)(d), of the Oregon Constitution.
 
-> (b) For a school district with a statutory rate limit on July 1, 2003, that is greater than $4.50 per $1,000 of assessed value, the amount of property taxes actually received by the district, including penalties and interest on taxes, that results from an increase in the rate of ad valorem property tax of the district allowed under Article XI, section 11 (5)(d), of the Oregon Constitution.
-
-```
-r_line = full PPS-line rate, permanent rate plus the 2009 gap increase, $ per $1,000 AV
-       = 5.2781
-gap    = gap-rate portion of the PPS line, excluded
-       = T_line × (r_line − r_perm) / r_line
-       = $360M × 0.0954
-       = $34M
-
-L_pps  = T_line + T_lo + CSF_pps + CountyFund_pps + PILT_pps + Fed_pps − LO_cap − gap
-       = T_line − gap                 # CSF, county fund, PILT, federal items omitted
-       = T_line × r_perm / r_line
-       = $360M × 0.9046
-       = $326M
-```
+$$
+\begin{aligned}
+r_{\text{line}} &= \text{full PPS-line rate, permanent rate plus the 2009 gap increase, \$ per \$1,000 AV} \\
+&= 5.2781 \\
+\text{gap} &= \text{gap-rate portion of the PPS line, excluded} \\
+&= T_{\text{line}} \times \frac{r_{\text{line}} - r_{\text{perm}}}{r_{\text{line}}} \\
+&= \$360\text{M} \times 0.0954 \\
+&= \$34\text{M} \\[1ex]
+L_{\text{pps}} &= T_{\text{line}} + T_{\text{lo}} + \text{CSF}_{\text{pps}} + \text{CountyFund}_{\text{pps}} + \text{PILT}_{\text{pps}} + \text{Fed}_{\text{pps}} - \text{LO}_{\text{cap}} - \text{gap} \\
+&= T_{\text{line}} - \text{gap} \qquad \text{CSF, county fund, PILT, federal items omitted} \\
+&= T_{\text{line}} \times \frac{r_{\text{perm}}}{r_{\text{line}}} \\
+&= \$360\text{M} \times 0.9046 \\
+&= \$326\text{M}
+\end{aligned}
+$$
 
 ---
 
@@ -562,17 +613,21 @@ L_pps  = T_line + T_lo + CSF_pps + CountyFund_pps + PILT_pps + Fed_pps − LO_ca
 
 > (a) There is established a State School Fund in the General Fund.
 
-```
-SSF = State School Fund, the state's K-12 appropriation
-```
+$$
+\text{SSF} = \text{State School Fund, the state's K-12 appropriation}
+$$
 
 > (b) The Department of Education, on behalf of the State of Oregon, may solicit and accept gifts, grants, donations and other moneys from public and private sources for the State School Fund. Moneys received as provided in this paragraph shall be deposited into the State School Fund.
 
 > (c) The State School Fund shall consist of moneys appropriated by the Legislative Assembly, moneys transferred from the Fund for Student Success, moneys transferred from the Education Stability Fund and the Oregon Marijuana Account and moneys received as provided in paragraph (b) of this subsection.
 
-```
-SSF = $11.36B                        # 2025–27 biennium, set by the Legislature [^2]
-```
+$$
+\begin{aligned}
+\text{SSF} &= \$11.36\text{B} \qquad \text{2025–27 biennium, set by the Legislature}
+\end{aligned}
+$$
+
+SSF from TSCC.[^2]
 
 > (d) The State School Fund is continuously appropriated to the Department of Education for the purposes of ORS 327.006 to 327.077, 327.095, 327.099, 327.101, 327.125, 327.137, 327.348, 327.356 to 327.359, 336.575, 336.580, 336.635, 343.243, 343.533, 343.941 and 343.961.
 
@@ -580,13 +635,16 @@ SSF = $11.36B                        # 2025–27 biennium, set by the Legislatur
 
 > There shall be apportioned from the State School Fund to each school district a State School Fund grant, consisting of the positive amount equal to a general purpose grant and a transportation grant and a high cost disabilities grant minus local revenue, computed as provided in ORS 327.011 and 327.013.
 
-```
-Grant_pps = State School Fund grant to PPS, the state check
+$$
+\begin{aligned}
+\text{Grant}_{\text{pps}} &= \text{State School Fund grant to PPS, the state check} \\[1ex]
+\text{Grant}_{\text{pps}} &= \text{GPG}_{\text{pps}} + \text{TR}_{\text{pps}} + \text{HCD}_{\text{pps}} - L_{\text{pps}} \\
+&= \$621\text{M} + \$13\text{M} + \text{HCD}_{\text{pps}} - \$326\text{M} \\
+\text{Grant}_{\text{pps}} &= \$291\text{M} \qquad \text{PPS FY 2025-26 budget; } \text{HCD}_{\text{pps}} \text{ not published}
+\end{aligned}
+$$
 
-Grant_pps = GPG_pps + TR_pps + HCD_pps − L_pps
-          = $621M + $13M + HCD_pps − $326M
-Grant_pps = $291M                    # PPS FY 2025-26 budget [^2]; HCD_pps not published
-```
+Grant from TSCC.[^2]
 
 ### (3)
 
@@ -606,33 +664,33 @@ Grant_pps = $291M                    # PPS FY 2025-26 budget [^2]; HCD_pps not p
 
 ### (7) through (19)
 
-> (7) Each biennium, the Department of Education may expend from the State School Fund no more than $3 million for expenses incurred by the department in providing support to school districts, education service districts and public charter schools at any time before, during or after a threat or hazard that may affect a school district, an education service district or a public charter school and for the purpose of helping to improve the safety and security of students and staff.
+> (7) Each biennium, the Department of Education may expend from the State School Fund no more than \$3 million for expenses incurred by the department in providing support to school districts, education service districts and public charter schools at any time before, during or after a threat or hazard that may affect a school district, an education service district or a public charter school and for the purpose of helping to improve the safety and security of students and staff.
 >
-> (8) Each biennium, the Department of Education may expend from the State School Fund no more than $10 million for expenses incurred by the Office of School Facilities under ORS 326.125 (1)(b) to (g).
+> (8) Each biennium, the Department of Education may expend from the State School Fund no more than \$10 million for expenses incurred by the Office of School Facilities under ORS 326.125 (1)(b) to (g).
 >
 > (9) Each fiscal year, the Department of Education shall transfer to the Pediatric Nursing Facility Account established in ORS 327.022 the amount necessary to pay the costs of educational services provided to students admitted to pediatric nursing facilities as provided in ORS 343.941.
 >
-> (10) Each fiscal year, the Department of Education shall transfer the amount of $55 million from the State School Fund to the High Cost Disabilities Account established in ORS 327.348.
+> (10) Each fiscal year, the Department of Education shall transfer the amount of \$55 million from the State School Fund to the High Cost Disabilities Account established in ORS 327.348.
 >
-> (11)(a) Each biennium, the Department of Education shall transfer $39.5 million from the State School Fund to the Educator Advancement Fund established under ORS 342.953.
+> (11)(a) Each biennium, the Department of Education shall transfer \$39.5 million from the State School Fund to the Educator Advancement Fund established under ORS 342.953.
 >
-> (b) For the purpose of making the transfer under this subsection: (A) The total amount available for all distributions from the State School Fund shall be reduced by $6 million; (B) The amount distributed to school districts from the State School Fund under this section and ORS 327.013 shall be reduced by $16.75 million; and (C) The amount distributed to education service districts from the State School Fund under this section and ORS 327.019 shall be reduced by $16.75 million.
+> (b) For the purpose of making the transfer under this subsection: (A) The total amount available for all distributions from the State School Fund shall be reduced by \$6 million; (B) The amount distributed to school districts from the State School Fund under this section and ORS 327.013 shall be reduced by \$16.75 million; and (C) The amount distributed to education service districts from the State School Fund under this section and ORS 327.019 shall be reduced by \$16.75 million.
 >
 > (c) For each biennium, the amounts identified in this subsection shall be adjusted by the same percentage by which the instructions furnished to state agencies by the Governor under ORS 291.204 direct the state agencies to adjust their agency budget requests for special payments under ORS 291.216 (6)(a)(C).
 >
-> (12) Each biennium, the Department of Education shall transfer $12.5 million from the State School Fund to the Statewide English Language Learner Program Account established under ORS 327.344.
+> (12) Each biennium, the Department of Education shall transfer \$12.5 million from the State School Fund to the Statewide English Language Learner Program Account established under ORS 327.344.
 >
-> (13) Each fiscal year, the Department of Education may expend up to $550,000 from the State School Fund for the contract described in ORS 329.488. The amount distributed to education service districts from the State School Fund under this section and ORS 327.019 shall be reduced by the amount expended by the department under this subsection.
+> (13) Each fiscal year, the Department of Education may expend up to \$550,000 from the State School Fund for the contract described in ORS 329.488. The amount distributed to education service districts from the State School Fund under this section and ORS 327.019 shall be reduced by the amount expended by the department under this subsection.
 >
-> (14) Each biennium, the Department of Education may expend up to $350,000 from the State School Fund to provide administration of and support for the development of talented and gifted education under ORS 343.404.
+> (14) Each biennium, the Department of Education may expend up to \$350,000 from the State School Fund to provide administration of and support for the development of talented and gifted education under ORS 343.404.
 >
-> (15) Each biennium, the Department of Education may expend up to $150,000 from the State School Fund for the administration of a program to increase the number of licensed speech-language pathologists and certified speech-language pathology assistants under ORS 348.398.
+> (15) Each biennium, the Department of Education may expend up to \$150,000 from the State School Fund for the administration of a program to increase the number of licensed speech-language pathologists and certified speech-language pathology assistants under ORS 348.398.
 >
-> (16) Each biennium, the Department of Education shall transfer $2 million from the State School Fund for deposit to the Healthy School Facilities Fund established under ORS 332.337. Notwithstanding ORS 332.337, the department may expend moneys received in the Healthy School Facilities Fund under this subsection only as grants for costs associated with testing for elevated levels of lead in water used for drinking or food preparation.
+> (16) Each biennium, the Department of Education shall transfer \$2 million from the State School Fund for deposit to the Healthy School Facilities Fund established under ORS 332.337. Notwithstanding ORS 332.337, the department may expend moneys received in the Healthy School Facilities Fund under this subsection only as grants for costs associated with testing for elevated levels of lead in water used for drinking or food preparation.
 >
-> (17) Each biennium, the Department of Education shall transfer an amount not to exceed $5,595,000 for the purpose of making tampons and sanitary pads available as provided by ORS 326.545.
+> (17) Each biennium, the Department of Education shall transfer an amount not to exceed \$5,595,000 for the purpose of making tampons and sanitary pads available as provided by ORS 326.545.
 >
-> (18) Each fiscal year, the Department of Education shall transfer the amount of $2.5 million from the State School Fund to the Small School District Supplement Fund established in ORS 327.359.
+> (18) Each fiscal year, the Department of Education shall transfer the amount of \$2.5 million from the State School Fund to the Small School District Supplement Fund established in ORS 327.359.
 >
 > (19) Each biennium, the Department of Education shall transfer to the Oregon Military Department the amount necessary to pay the costs of educational services provided to students admitted to programs operated by the military department for at-risk youth, as described in ORS 396.360, that are outstanding after any General Fund appropriations and the calculation of available federal funds for the programs.
 
