@@ -60,13 +60,13 @@ $$
 
 [Table](#district_tax) shows the district-wide collection data[^1][^2][^3] Tax year N funds PPS fiscal year N/N+1.  It also reports the year-on-year percent change (YoY) and the compound annual growth rate (CAGR).
 
-| **Tax year** | **`PPS` (\$M)** | **YoY** | **`PPS_LOC_OPT` (\$M)** | **YoY** | **`PPS_BONDS` (\$M)** | **YoY** |
+| **Tax year** | **`PPS`** | **YoY** | **`PPS_LOC_OPT`** | **YoY** | **`PPS_BONDS`** | **YoY** |
 | :-------: | :-------: | :-----: | :-------: | :-----: | :-------: | :-----: |
-| 2021 | 300 | | 105 | | 142 | |
-| 2022 | 312 | +4.0% | 109 | +3.8% | 146 | +2.8% |
-| 2023 | 340 | +9.0% | 107 | −1.8% | 158 | +8.2% |
-| 2024 | 348 | +2.4% | 104 | −2.8% | 157 | −0.6% |
-| 2025* | 360 | +3.4% | 109 | +4.8% | 174 | +10.8% |
+| 2021 | \$300M | | \$105M | | \$142M | |
+| 2022 | \$312M | +4.0% | \$109M | +3.8% | \$146M | +2.8% |
+| 2023 | \$340M | +9.0% | \$107M | −1.8% | \$158M | +8.2% |
+| 2024 | \$348M | +2.4% | \$104M | −2.8% | \$157M | −0.6% |
+| 2025* | \$360M | +3.4% | \$109M | +4.8% | \$174M | +10.8% |
 | 2021→2025 CAGR | | +4.7%/yr | | +0.9%/yr | | +5.2%/yr |
 
 Table district_tax: District-wide PPS property tax.
@@ -149,24 +149,22 @@ Every 2 years the state sets a state-wide budget for school spending, $\text{Pot
 - State School Fund - $\text{SSF}$
        - The state has a State School Fund for education, funded from the state General Fund, mainly income taxes and lottery
 
-$\text{SSF}$ is an amount covering two years. It's split 49%/51% between those years, but for convenience to get an annual number will divide by 2.
+$\text{SSF}$ is an amount covering two years. It's split 49%/51% between the two years; after the ESD share and statutory set-asides, the school districts' portion for 2025-26 is \$5.25B.
 
 $$
 \begin{aligned}
-\text{Pot} &= \frac{\text{SSF}}{2} + L_{\text{state}} \\
-&= \frac{\$11.36\text{B}}{2} + \$2.58\text{B} \\
-&= \$8.26\text{B}
+\text{Pot} &= \text{SSF}_{\text{districts}} + L_{\text{state}} \\
+&= \$5.25\text{B} + \$2.57\text{B} \\
+&= \$7.82\text{B}
 \end{aligned}
 $$
 
-The state divides $\text{Pot}$ by the total weighted students in the state, $\text{ADMw}_{\text{state}}$.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.  The state uses this to calculate a funding rate per weighted student in the state, $\text{Rate}_{\text{ADMw}}$:
+The state spreads $\text{Pot}$ across the total weighted students in the state, $\text{ADMw}_{\text{state}}$.  The weighting is an attempt to account for varying costs in education, for example for students with special needs.  The state sets a funding rate per weighted student, $\text{Rate}_{\text{ADMw}}$, so that the grants to all districts add up to $\text{Pot}$.  Each district's rate is adjusted slightly for its teachers' experience; PPS's rate is:
 
 $$
 \begin{aligned}
-\text{ADMw}_{\text{state}} &= 665{,}548 \qquad \text{total weighted students in the state} \\
-\text{Rate}_{\text{ADMw}} &= \frac{\text{Pot}}{\text{ADMw}_{\text{state}}} \\
-&= \frac{\$8.26\text{B}}{665{,}548} \\
-&= \$12{,}411
+\text{ADMw}_{\text{state}} &= 667{,}769 \qquad \text{total weighted students in the state} \\
+\text{Rate}_{\text{ADMw}} &= \$11{,}164 \qquad \text{ODE general purpose grant per weighted student, PPS}
 \end{aligned}
 $$
 
@@ -174,10 +172,8 @@ Then the state looks at PPS's count of weighted students, $\text{ADMw}_{\text{pp
 
 $$
 \begin{aligned}
-\text{ADMw}_{\text{pps}} &= 52{,}441 \qquad \text{total weighted students in PPS} \\
-\text{Pot}_{\text{pps}} &= \text{Rate}_{\text{ADMw}} \times \text{ADMw}_{\text{pps}} \\
-&= \$12{,}411 \times 52{,}441 \\
-&= \$651\text{M}
+\text{ADMw}_{\text{pps}} &= 52{,}519 \qquad \text{total weighted students in PPS} \\
+\text{Pot}_{\text{pps}} &= \$621\text{M} \qquad \text{PPS formula revenue; } \text{Rate}_{\text{ADMw}} \times \text{ADMw}_{\text{pps}} = \$586\text{M} \text{ plus the \$34.65M transportation grant}
 \end{aligned}
 $$
 
@@ -185,10 +181,10 @@ The amount of money granted from the state to PPS, $\text{Grant}_{\text{pps}}$, 
 
 $$
 \begin{aligned}
-L_{\text{pps}} &= \$326\text{M} \qquad \text{90\% of PORTLAND PUBLIC SCHOOLS tax} \\
+L_{\text{pps}} &= \$330\text{M} \qquad \text{property taxes plus Common School Fund and county school fund, per ODE} \\
 \text{Grant}_{\text{pps}} &= \text{Pot}_{\text{pps}} - L_{\text{pps}} \\
-&= \$651\text{M} - \$326\text{M} \\
-&= \$325\text{M}
+&= \$621\text{M} - \$330\text{M} \\
+&= \$291\text{M}
 \end{aligned}
 $$
 
@@ -207,12 +203,12 @@ Though the grant is not raised through local taxes, it is offset by local taxes,
 
 $$
 \begin{aligned}
-\text{Rate}_{\text{equitable ADMw}} &= \frac{\text{SSF} / 2}{\text{ADMw}_{\text{state}}} \\
-&= \frac{\$11.36\text{B} / 2}{665{,}548} \\
-&= \$8{,}538 \\[1ex]
+\text{Rate}_{\text{equitable ADMw}} &= \frac{\text{SSF}_{2025\text{-}26}}{\text{ADMw}_{\text{state}}} \\
+&= \frac{\$5{,}566\text{M}}{667{,}769} \\
+&= \$8{,}335 \\[1ex]
 \text{Grant}_{\text{equitable pps}} &= \text{Rate}_{\text{equitable ADMw}} \times \text{ADMw}_{\text{pps}} \\
-&= \$8{,}538 \times 52{,}441 \\
-&= \$448\text{M}
+&= \$8{,}335 \times 52{,}519 \\
+&= \$438\text{M}
 \end{aligned}
 $$
 
@@ -221,8 +217,8 @@ The difference between $\text{Grant}_{\text{equitable pps}}$ and $\text{Grant}_{
 $$
 \begin{aligned}
 \text{Outflow}_{\text{pps}} &= \text{Grant}_{\text{equitable pps}} - \text{Grant}_{\text{pps}} \\
-&= \$448\text{M} - \$325\text{M} \\
-&= \$123\text{M}
+&= \$438\text{M} - \$291\text{M} \\
+&= \$147\text{M}
 \end{aligned}
 $$
 
@@ -232,8 +228,8 @@ $$
 \begin{aligned}
 L_{\text{pps collected}} &= \$360\text{M} \\
 \text{Outflow}_{\text{pps percent}} &= \frac{\text{Outflow}_{\text{pps}}}{L_{\text{pps collected}}} \\
-&= \frac{\$123\text{M}}{\$360\text{M}} \\
-&= 34\%
+&= \frac{\$147\text{M}}{\$360\text{M}} \\
+&= 41\%
 \end{aligned}
 $$
 
@@ -243,8 +239,8 @@ $$
 \begin{aligned}
 L_{\text{sabin collected}} &= \$3.57\text{M} \\
 \text{Outflow}_{\text{sabin}} &= \text{Outflow}_{\text{pps percent}} \times L_{\text{sabin collected}} \\
-&= 34\% \times \$3.57\text{M} \\
-&= \$1.21\text{M}
+&= 41\% \times \$3.57\text{M} \\
+&= \$1.45\text{M}
 \end{aligned}
 $$
 
@@ -254,14 +250,14 @@ $$
 \begin{aligned}
 \text{Properties}_{\text{sabin}} &= 2{,}729 \\
 \text{Outflow}_{\text{sabin per payer}} &= \frac{\text{Outflow}_{\text{sabin}}}{\text{Properties}_{\text{sabin}}} \\
-&= \frac{\$1.21\text{M}}{2{,}729} \\
-&= \$443
+&= \frac{\$1.45\text{M}}{2{,}729} \\
+&= \$532
 \end{aligned}
 $$
 
 ### Conclusion
 
-In 2025, tax payers in the Sabin catchment area each paid **\$443** that leaves the PPS district, while facing budget cuts and school closures.  At the district level, tax payers paid **\$123M** that leaves the PPS district, almost 2x the projected shortfall in 2027-28.
+In 2025, tax payers in the Sabin catchment area each paid **\$532** that leaves the PPS district, while facing budget cuts and school closures.  At the district level, tax payers paid **\$147M** that leaves the PPS district, more than 2x the projected shortfall in 2027-28.
 
 ---
 
@@ -289,11 +285,11 @@ None alleged. Independent audits give unmodified opinions; the FY 2025 audit rep
 
 ## One-time money expired
 
-| **Item** | **Amount (\$M)** |
-|------|---:|
-| Federal ESSER relief spent on ongoing programs, FY 2020-21 → FY 2023-24 | ~115 |
-| General Fund beginning reserve, FY 2023-24 → FY 2026-27 | 105.5 → 41.0 |
-| PERS rate stabilization reserve, transferred and spent FY 2025-26 | ~24 |
+| **Item** | **Amount** |
+|-----------------|:---:|
+| Federal ESSER relief spent on ongoing programs, FY 2020-21 → FY 2023-24 | ~\$115M |
+| General Fund beginning reserve, FY 2023-24 → FY 2026-27 | \$105.5M → \$41.0M |
+| PERS rate stabilization reserve, transferred and spent FY 2025-26 | ~\$24M |
 
 Table one_time: One-time resources.
 
@@ -305,7 +301,7 @@ Portland Public Schools (PPS) claims to be facing a \$ 65M shortfall in the 2027
 
 After the 2023-24 school year, the federal ESSER Covid relief money ran out.  PPS spent the General Fund down approximately \$ 60M from 2023-24 to 2026-27, when it only had \$ 41M remaining.  Hence the need for budget cuts under the current funding model.
 
-The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing \$ 123M of their tax payments to other school districts in the state.  Note this this amount is almost double the claimed 2027-28 shortfall.
+The funding formulas in Oregon statutes ORS 327.008, 327.011 and 327.013 result in taxyers in the PPS district effectively redistributing \$ 147M of their tax payments to other school districts in the state.  Note this this amount is more than double the claimed 2027-28 shortfall.
 
 Thus taxyers in the PPS district already do pay enough taxes to keep the existing level of service, but part of these taxes is taken by the state and given to other districts.
 
@@ -335,9 +331,8 @@ F &= \text{funding percentage, computed in (1)(a)} \\
 \text{ADMw}_{\text{pps}} &= \text{PPS extended weighted average daily membership, computed in (1)(c)} \\
 \text{Rate}_{\text{ADMw}} &= \text{general purpose grant per extended ADMw, computed in (1)(a)} \\[1ex]
 \text{GPG}_{\text{pps}} &= F \times \text{TG}_{\text{pps}} \times \text{ADMw}_{\text{pps}} \\
-&= \text{Rate}_{\text{ADMw}} \times \text{ADMw}_{\text{pps}} \qquad F \times \text{TG}_{\text{pps}} \text{ published only as the product } \text{Rate}_{\text{ADMw}} \\
-&= \$11{,}834 \times 52{,}441 \\
-&\approx \$621\text{M}
+&= 2.4788 \times \$4{,}503.75 \times 52{,}519 \\
+&= \$586\text{M}
 \end{aligned}
 $$
 
@@ -352,18 +347,18 @@ L_{\text{state}} &= \text{all districts' local revenue,} \\
 &\phantom{{}={}} \text{computed in 327.011, summed} \\
 \text{ADMw}_{\text{state}} &= \text{statewide extended weighted average daily membership, computed in (1)(c)} \\[1ex]
 \text{Pot} &= \text{SSF}_{\text{districts}} + L_{\text{state}} \\
-&= \$7{,}876\text{M} \qquad \text{FY 2025-26, LRO} \\
-L_{\text{state}} &= \$2{,}576\text{M} \qquad \text{ODE estimate} \\
+&= \$7{,}816\text{M} \qquad \text{FY 2025-26, ODE} \\
+L_{\text{state}} &= \$2{,}567\text{M} \qquad \text{ODE estimate} \\
 \text{SSF}_{\text{districts}} &= \text{Pot} - L_{\text{state}} \\
-&= \$5{,}300\text{M} \\
-\text{Rate}_{\text{ADMw}} &= \frac{\text{Pot}}{\text{ADMw}_{\text{state}}} \\
-&= \frac{\$7{,}876\text{M}}{665{,}548} \\
-&= \$11{,}834 \\
-F &= \frac{\text{Rate}_{\text{ADMw}}}{\text{TG}_{\text{pps}}} \qquad \text{chosen so } \textstyle\sum \text{GPG over all districts} = \text{Pot}
+&= \$5{,}249\text{M} \\
+F &= 2.4788 \qquad \text{ODE school district funding ratio} \\
+\text{Rate}_{\text{ADMw}} &= F \times \text{TG}_{\text{pps}} \\
+&= 2.4788 \times \$4{,}503.75 \\
+&= \$11{,}164 \qquad \text{ODE, PPS}
 \end{aligned}
 $$
 
-Pot from LRO;[^7] L_state from ODE.[^8]
+Pot, $L_{\text{state}}$, $F$ and $\text{Rate}_{\text{ADMw}}$ from ODE.[^7]
 
 > (b) Target Grant = Statewide Target per ADMw Grant + Teacher Experience Factor. For the purpose of the calculation made under this paragraph:
 
@@ -385,9 +380,14 @@ $$
 
 $$
 \begin{aligned}
-\text{exp}_{\text{pps}} &= \text{PPS average licensed-teacher experience, years} \qquad \text{not published} \\
-\text{exp}_{\text{state}} &= \text{statewide average licensed-teacher experience, years} \qquad \text{not published} \\[1ex]
-\text{TEF}_{\text{pps}} &= \$25 \times (\text{exp}_{\text{pps}} - \text{exp}_{\text{state}})
+\text{exp}_{\text{pps}} &= \text{PPS average licensed-teacher experience, years} \\
+&= 12.72 \\
+\text{exp}_{\text{state}} &= \text{statewide average licensed-teacher experience, years} \\
+&= 12.57 \\[1ex]
+\text{TEF}_{\text{pps}} &= \$25 \times (\text{exp}_{\text{pps}} - \text{exp}_{\text{state}}) \\
+&= \$25 \times 0.15 \\
+&= \$3.75 \\
+\text{TG}_{\text{pps}} &= \$4{,}503.75
 \end{aligned}
 $$
 
@@ -396,13 +396,13 @@ $$
 $$
 \begin{aligned}
 \text{ADMw}_{\text{pps}} &= \max(\text{ADMw this year}, \text{ADMw prior year}) \text{ for PPS} \\
-&= 52{,}441 \qquad \text{FY 2025-26, LRO} \\
+&= 52{,}519 \qquad \text{FY 2025-26, ODE; max of 51,517 and 52,519} \\
 \text{ADMw}_{\text{state}} &= \sum_{\text{all districts}} \max(\text{ADMw this year}, \text{ADMw prior year}) \\
-&= 665{,}548 \qquad \text{FY 2025-26, LRO}
+&= 667{,}769 \qquad \text{FY 2025-26, ODE}
 \end{aligned}
 $$
 
-ADMw from LRO.[^7]
+ADMw from ODE.[^7]
 
 > (A) Weighted average daily membership or ADMw = average daily membership + an additional amount computed as follows:
 >
@@ -466,13 +466,15 @@ $$
 $$
 \begin{aligned}
 \text{TR}_{\text{pps}} &= \text{transportation grant to PPS} \\
-\text{TC}_{\text{pps}} &= \text{PPS approved transportation costs} \qquad \text{not published} \\[1ex]
+\text{TC}_{\text{pps}} &= \text{PPS approved transportation costs} \\
+&= \$49.5\text{M} \\[1ex]
 \text{TR}_{\text{pps}} &= \{0.70 \mid 0.80 \mid 0.90\} \times \text{TC}_{\text{pps}} \qquad \text{rate depends on PPS's percentile rank of TC/ADM} \\
-&\approx \$13\text{M} \qquad \text{LRO formula revenue \$634M} - \text{GPG}_{\text{pps}}
+&= 0.70 \times \$49.5\text{M} \qquad \text{PPS ranked at the 60th percentile} \\
+&= \$34.65\text{M}
 \end{aligned}
 $$
 
-Formula revenue from LRO.[^7]
+Transportation grant from ODE.[^7]
 
 ---
 
@@ -515,7 +517,7 @@ Approved budget from TSCC.[^2]
 $$
 \begin{aligned}
 \text{CSF}_{\text{pps}} &= \text{Common School Fund received by PPS} \\
-&\approx \$6.6\text{M}
+&= \$6.7\text{M}
 \end{aligned}
 $$
 
@@ -540,7 +542,7 @@ $$
 $$
 \begin{aligned}
 \text{PILT}_{\text{pps}} &= \text{payments in lieu of property taxes received by PPS} \\
-&\approx \$0.5\text{M}
+&= \$0
 \end{aligned}
 $$
 
@@ -598,10 +600,8 @@ r_{\text{line}} &= \text{full PPS-line rate, permanent rate plus the 2009 gap in
 &= \$360\text{M} \times 0.0954 \\
 &= \$34\text{M} \\[1ex]
 L_{\text{pps}} &= T_{\text{line}} + T_{\text{lo}} + \text{CSF}_{\text{pps}} + \text{CountyFund}_{\text{pps}} + \text{PILT}_{\text{pps}} + \text{Fed}_{\text{pps}} - \text{LO}_{\text{cap}} - \text{gap} \\
-&= T_{\text{line}} - \text{gap} \qquad \text{CSF, county fund, PILT, federal items omitted} \\
-&= T_{\text{line}} \times \frac{r_{\text{perm}}}{r_{\text{line}}} \\
-&= \$360\text{M} \times 0.9046 \\
-&= \$326\text{M}
+&= \$323.0\text{M} + \$6.7\text{M} + \$0.01\text{M} \qquad \text{ODE: property taxes, Common School Fund, county school fund} \\
+&= \$330\text{M}
 \end{aligned}
 $$
 
@@ -639,12 +639,12 @@ $$
 \begin{aligned}
 \text{Grant}_{\text{pps}} &= \text{State School Fund grant to PPS, the state check} \\[1ex]
 \text{Grant}_{\text{pps}} &= \text{GPG}_{\text{pps}} + \text{TR}_{\text{pps}} + \text{HCD}_{\text{pps}} - L_{\text{pps}} \\
-&= \$621\text{M} + \$13\text{M} + \text{HCD}_{\text{pps}} - \$326\text{M} \\
-\text{Grant}_{\text{pps}} &= \$291\text{M} \qquad \text{PPS FY 2025-26 budget; } \text{HCD}_{\text{pps}} \text{ not published}
+&= \$586\text{M} + \$34.65\text{M} + \text{HCD}_{\text{pps}} - \$330\text{M} \\
+&= \$291\text{M} \qquad \text{ODE; } \text{HCD}_{\text{pps}} \text{ paid separately}
 \end{aligned}
 $$
 
-Grant from TSCC.[^2]
+Grant from ODE.[^7]
 
 ### (3)
 
@@ -700,5 +700,4 @@ Grant from TSCC.[^2]
 [^4]: Sjoberg Evashenk Consulting, [Annual Bond Performance Audit, FY 2024-25 and 2025-26](https://resources.finalsite.net/images/v1791396261/ppsnet/qf1mtv3oygjz9p59ajha/PPSBondPerformanceAuditReportforFY24-25andFY25-26.pdf), Oct. 6, 2026, pp. 2, 14, 16–17, 24–31, 34.
 [^5]: Talbot, Korvola & Warwick, [FY 2025 audit communications](https://www.pps.net/fs/resource-manager/view/11756a72-66a0-4faa-a425-2cc1bbc8bc65).
 [^6]: Portland Civic Lab, [Where the next dollar goes: the PPS budget, examined](https://www.portlandciviclab.org/deep-dives/pps-budget), Section 4.
-[^7]: Legislative Revenue Office, [School Finance Distribution 2023-24 through 2026-27, Simulation 2025 #1](https://apps.oregonlegislature.gov/liz/2025R1/Downloads/MeasureAnalysisDocument/92719) — statewide and PPS extended ADMw, FY 2023-24 through 2025-26; FY 2025-26 formula revenue.
-[^8]: Statewide district local revenue: FY 2021-22 from [LRO, K-12 funding presentation, Sept. 2023](https://olis.oregonlegislature.gov/liz/2023I1/Downloads/CommitteeMeetingDocument/284187); FY 2022-23 from [ODE 2022-23 SSF estimate, May 2024](https://oregon.gov/ode/schools-and-districts/grants/Documents/2022%20-%2023%20State%20school%20fund/22-23%20District%20Estimate%205-3-24.pdf); FY 2023-24 from [ODE 2023-24 SSF estimate, May 2024](https://oregon.gov/ode/schools-and-districts/grants/Documents/2023-24%20State%20School%20Fund/23-24%20Estimate%205-3-24.pdf); FY 2024-25 from [ODE 2024-25 SSF estimate, June 2024](https://oregon.gov/ode/schools-and-districts/grants/Documents/2024-25%20State%20School%20Fund/24-25%20Estimate%206-20-24.pdf); FY 2025-26 from [ODE 2025-26 SSF estimate, March 2025](https://loswegok12.granicus.com/MetaViewer.php?view_id=3&clip_id=911&meta_id=66064).
+[^7]: Oregon Department of Education, [2025-26 State School Fund Estimates, May 1, 2026](https://www.oregon.gov/ode/schools-and-districts/grants/Documents/2025-26%20State%20School%20Fund/25-26%20Estimates%205-1-26.pdf) — statewide figures p. 1; Portland SD 1J p. 143; statewide extended ADMw is the sum of the district pages.
